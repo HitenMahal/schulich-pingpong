@@ -39,3 +39,11 @@ class endUser:
     def set_ucid(self, newUcid):
 
         self.ucid = newUcid
+
+    # def insertUser(self):
+
+    #     database = ""
+
+    #     conect = create_connection(database)
+
+    
