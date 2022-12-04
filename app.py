@@ -1,17 +1,14 @@
 import sqlite3
 from flask import Flask, session, render_template, request, g
 
+from SQLDriver import connect_db
+
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "<h1>Hello World!</h1>"
-
-def connect_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect('database.db')
-    return db
+    data = connect_db()
+    return str(data)
 
 @app.teardown_appcontext
 def close_connection(exception):
