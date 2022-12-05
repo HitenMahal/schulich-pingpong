@@ -33,7 +33,7 @@ class start:
 
         SQLDriver.add_new_profile(newUCID, newUsername, newEmail, newType)
 
-    elif delete_profile == 'delete':
+    elif account_status == 'delete':
         
         newUCID = input("Enter UCID of account to delete")
         SQLDriver.delete_profile(newUCID)
@@ -73,98 +73,50 @@ class start:
 
     elif input == 'team':
 
-        team = SQLDriver.teamInfo(ucid)# player ucid will be sent in to then pull info about the team they are in
-        
-        print("Team name: " + team.teamName)
+        status = input("New Team or Delete Existing Team or search stats of all team members")
 
-        #Realized a player could be part of more than 1 team, could make life easier and only show 1 player can only be on 1 team
-        #If want to show player with multiple teams ->
-        # Need to make loop to check for all teams players is part of
-        # then  print out every information about that specific team
+        if status == "new":
 
-        print("Team Type: " + team.teamType)
+            newTeam_ID = input("ID")
+            newTeam_Name = input("Enter desired team name")
+            newTeam_Type = input("Enter if the team is singles or doubles")
 
-        print("Team ID: " + team.id)
+            SQLDriver.new_team(newTeam_ID, newTeam_Name, newTeam_Type)
 
-        print("Team Members: " + team.member1 + team.member2)
+        elif status == "delete":
 
-        #attempt to print off all teams user is in
+            toDel = input("Enter team ID to be deleted")
 
-        numOfTeam = SQLDriver.teamInfo(ucid)     # count through the number of teams the player is part of
+            SQLDriver.delete_team(toDel)
 
-        for i in numOfTeam:
+        elif status == "stats":
             
-            #will iterate throught he teams the player is in
+            team_id = input("Enter team ID to see players stats")
 
-            if team.type == 'singles':
+            team_stats = SQLDriver.get_teamMember_stats(team_id)
 
-                print("Team name: " + team.teamName)
+            print("Matches won: " + team_stats.wins)
 
-                print("Team Type: " + team.teamType)
+            print("Matches played: " + team_stats.gamesPlayed)
 
-                print("Team ID: " + team.id)
+            print("Hours played: " + team_stats.timeSpent)
 
-                print("Team Members: " + ucid)
+        user_in_team = input("add new member or remove member or show all teams member is part of")
 
-            elif team.type == 'doubles':
+        if user_in_team == "add":
 
-                print("Team name: " + team.teamName)
+            memID = input("Enter new member id")
 
-                print("Team Type: " + team.teamType)
+            SQLDriver.add_team_member(memID)
 
-                print("Team ID: " + team.id)
+        elif user_in_team == "remove":
 
-                print("Team Members: " + ucid + team.partnerID)
+            memID = input("Enter member id")
 
-            # move onto next team\
-
-        
+            SQLDriver.remove_team_member(memID)
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    elif input == 'booking':
-
-        checker = 0
-
-        while checker == 0:
-
-            building_input = input("Select Building")
-
-            building_name = SQLDriver.Building(building_input) #see if requested building is valid
-
-            if building_name == 1:
-
-                table_input = input("Select a table to play at")
-
-                table_id = SQLDriver.table(table_input, building_name.name) # check if table exists
-
-                if table_id == 1:
-
-                    requested_time = input("Select a time slot")
-
-                    schedule_id = SQLDriver.schedule(table_id.id, building_name.name, requested_time)
-
-                    if schedule_id == 1:
-
-                        print("Time slot resevered for " + username + " in " + building_name.name + " ,table " + table_id.id + " at " + schedule_id.time)
-
-                        checker = 1
-                        
-                        
-                    else:
-
-                        print("Time slot not available")
-
-                else:
-
-                    print("Table not valid")
-
-            else:
-
-                print("Building not valid")        
-
-
-
-
+    
 
 
 

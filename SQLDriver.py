@@ -131,5 +131,29 @@ def add_stats(UCID, MatchesWon, MatchesPlayed, HoursPlayed):
 def delete_stats(UCID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO STATS VALUES (UCID, stat_distinguisher, {MatchesPlayed}, {MatchesWon}, {HoursPlayed})")
-    cursor.close()
+    cursor.execute("DELETE FROM STATS WHERE UCID = {UCID}")
+
+def new_team(team_ID, team_name, team_type):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO TEAM VALUES ({team_ID}, L_name_value, {team_name}, {team_type}")
+
+def delete_team(team_ID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM TEAM WHERE team_id = {team_ID}")
+
+def get_teamMember_stats(team_ID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT s.UCID, s.stat_distinguisher, s.matches_played, s.matches_won, s.hours_player FROM STATS as s NATURAL JOIN (SELECT UCID FROM USER_IN_TEAM WHERE team_id  = {team_ID})")
+
+def add_team_member(ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO TEAM (UCID) VALUES (UCID = {ucid})")
+
+def remove_team_member(ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM TEAM WHERE UCID = {ucid}")
