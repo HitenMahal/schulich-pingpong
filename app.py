@@ -14,24 +14,33 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if loginUser(int(username), password):
-            print("USERNAME:",username, "PASSWORD:",password)
-            return render_template("home.html", username=username)
+    try:
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            if loginUser(int(username), password):
+                print("USERNAME:",username, "PASSWORD:",password)
+                return render_template("home.html", name=username)
+            else:
+                return render_template("index.html", LOGIN_ERROR_MSG="Invalid username or password")
         else:
-            return render_template("index.html", LOGIN_ERROR_MSG="Invalid username or password")
-    else:
-        return render_template("index.html")
+            return render_template("index.html")
+    except Exception as e:
+        return render_template("index.html", LOGIN_ERROR_MSG=str(e))
+
 
 @app.route('/register', methods=['GET', 'POST'], endpoint='register')
 def register():
     if request.method == 'POST':
-        if add_new_profile(request.form['ucid'], request.form['password'], request.form['name'], request.form['email']):
+        response = add_new_profile(request.form['ucid'], request.form['password'], request.form['name'], request.form['email'])
+        if response == "SUCCESS":
             return render_template("index.html",REGISTER_MSG="Registration successful")
-        else:
+        elif response == "FAILURE":
             return render_template("index.html",REGISTER_MSG="Registration failed")
+        elif response == "UNIQUE constraint failed: EndUser.UCID":
+            return render_template("index.html",REGISTER_MSG="UCID already exists in the system, please login")
+        else:
+            return render_template("index.html",REGISTER_MSG=response)
     else:
         return render_template("index.html")
         
