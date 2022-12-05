@@ -60,7 +60,7 @@ def init_db():
     cursor.execute("CREATE TABLE Booking (forTimeStamp TEXT,scheduleNumber INTEGER,UCID INTEGER,PRIMARY KEY(forTimeStamp, scheduleNumber, UCID),FOREIGN KEY(UCID) REFERENCES Users(UCID),FOREIGN KEY(scheduleNumber) REFERENCES schedules(scheduleNumber));")
     # Rental
     cursor.execute("DROP TABLE IF EXISTS Rental")
-    cursor.execute("CREATE TABLE Rental(UCID INTEGER,rentalID INTEGER,startTime INTEGER,returnTIME INTEGER,deposit INTEGER,PRIMARY KEY(UCID,rentalID),FOREIGN KEY(UCID) REFERENCES Users(UCID));")
+    cursor.execute("CREATE TABLE Rental(UCID INTEGER,rentalID INTEGER AUTO_INCREMENT,startTime TEXT,returnTIME TEXT,deposit INTEGER,PRIMARY KEY(UCID,rentalID),FOREIGN KEY(UCID) REFERENCES Users(UCID));")
     # Equipment
     cursor.execute("DROP TABLE IF EXISTS Equipment")
     cursor.execute("CREATE TABLE equipment(EType TEXT,maxRentalTime INTEGER,rentalID INTEGER,BName TEXT,PRIMARY KEY(EType),FOREIGN KEY(rentalID) REFERENCES rental(rentalID),FOREIGN KEY(BName) REFERENCES building(buildingName));")
@@ -73,6 +73,11 @@ def initDefaultUsersAndAdmins():
     cursor = db.cursor()
     # Default Users
     cursor.execute("INSERT INTO EndUser VALUES ( 1, 'pass', 'John Doe', 'john.doe@ucalgary.ca', 'USER')")
+    cursor.execute("INSERT INTO Stats VALUES (1, 1, 10, 20, 30)")
+    cursor.execute("INSERT INTO Leaderboard VALUES ('crazy Time board', 'crazy Event', 'The Crazy Building')")
+    cursor.execute("INSERT INTO Building VALUES ('The Crazy Building', 'In a crazy Location', 'Crazy Studies')")
+    cursor.execute("INSERT INTO Building VALUES ('The Amazing Building', 'In a Amazing Location', 'Amazing Studies')")
+    cursor.execute("INSERT INTO Building VALUES ('The Engineering Building', 'In the best Location', 'Torture Studies')")
     print(cursor.rowcount, "INIT USER")
     cursor.execute("INSERT INTO EndUser VALUES ( 2, 'password', 'Hiten Mahalwar', 'hiten.mahalwar@ucalgary.ca', 'ADMIN')")
     print(cursor.rowcount, "INIT ADMIN")
@@ -138,7 +143,9 @@ def get_user_stats(UCID):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"SELECT * FROM STATS WHERE UCID = {UCID}")
+    x = cursor.fetchall()
     cursor.close()
+    return x
 
 def add_stats(UCID, MatchesWon, MatchesPlayed, HoursPlayed):
     db = connect_db()
@@ -223,12 +230,18 @@ def delete_booking(time_slot):
     db.commit()
     cursor.close()
 
-def new_rental(ucid, rental_id, start_time, return_time, deposit):
+def new_rental(ucid, start_time, return_time, deposit):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO RENTAL VALUES ({ucid}, {rental_id}, {start_time}, {return_time}, {deposit})")
+    cursor.execute(f"INSERT INTO RENTAL VALUES ({ucid}, {start_time}, {return_time}, {deposit})")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
+    
 
 def edit_rental(rental_id):
     db = connect_db()
@@ -284,7 +297,12 @@ def new_equipment(type, max_rental_time, building_name):
     cursor = db.cursor()
     cursor.execute(f"INSERT INTO EQUIPMENT VALUES ({type}, {max_rental_time}, {building_name})")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def delete_equipment(equipment_id):
     db = connect_db()

@@ -1,5 +1,6 @@
 import sqlite3
 from flask import Flask, session, render_template, request, g
+from datetime import datetime
 
 from SQLDriver import *
 
@@ -28,7 +29,11 @@ def login():
 @app.route('/stats', methods=['GET', 'POST'], endpoint='stats')
 def stats():
     if request.method == 'POST':
-        return render_template("stats.html")
+        stats = get_user_stats(1)
+        matchesWon = "matches Won: " + str(stats[0][2])
+        hoursPlayed = "hours Played: " + str(stats[0][3])
+        matchesPlayed = "matches Played: " + str(stats[0][4])
+        return render_template("stats.html", matchesWon = matchesWon, hoursPlayed = hoursPlayed, matchesPlayed = matchesPlayed)
     else:
         return render_template("home.html")
 
@@ -61,6 +66,33 @@ def register():
             return render_template("registerBad.html")
     else:
         return render_template("index.html")
+
+@app.route('/newRental', methods=['GET', 'POST'], endpoint='newRental')
+def newRental():
+    # userUCID = getUCID()
+    userUCID = 1
+    paddle = request.form['numberOfPaddles']
+    now = datetime.now()
+    current_hour = now.strftime("%H")
+    hour = int(current_hour)
+    current_minute = now.strftime("%M")
+    current_time = now.strftime("%H%M")
+    rentTime = request.form['rentTime']
+    for i in range(int(rentTime[0])):
+        if (hour < 24):
+            hour += 1
+        else:
+            hour == 0
+    returnTime = str(hour) + ":" + current_minute
+    deposit = 5 * paddle[0]
+    EType = paddle[1:]
+    max_rental_time = rentTime[0]
+    buildingName = request.form['BName']
+    if new_rental(userUCID, current_time, returnTime, deposit):
+        if new_equipment(EType, max_rental_time, buildingName):
+            return render_template("rent.html")
+    else:
+        return render_template("home.html")
 
 @app.teardown_appcontext
 def close_connection(exception):
