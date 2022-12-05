@@ -34,5 +34,10 @@ CREATE TABLE Stats (
 );
 
 CREATE TABLE Team (
-	
+    teamID                      int unsigned NOT NULL,
+    leaderboardName             VARCHAR(150) NOT NULL,
+    teamType                    VARCHAR(150) NOT NULL,
+    teamName                    VARCHAR(150) NOT NULL,
+	PRIMARY KEY (teamID),
+    FOREIGN KEY (Lname)         REFERENCES Leaderboard(Name)
 );

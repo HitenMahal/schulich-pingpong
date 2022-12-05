@@ -39,9 +39,29 @@ def SUBMIT_TEAMS():
         team_type = request.form['team_type']
         team_id = request.form['team_id']
         # player_ucid = request.form['player_ucid']
-        if new_team(team_id, team_name, team_type):
+        if new_team(int(team_id), team_name, team_type):
             print("TEAM ID: ", team_id, "TEAM NAME: ", team_name, "TEAM TYPE: ", team_type)
             return render_template("teams.html", team_id = team_id, team_name = team_name, team_type = team_type)
+    else:
+        return render_template("home.html")
+
+@app.route('/Delete_Teams', methods=['GET', 'POST'], endpoint='Delete_Teams')
+def Delete_Teams():
+    if request.method == 'POST':
+        team_id = request.form['team_id']
+        if delete_team(int(team_id)):
+            print("TEAM ID: ", team_id)
+            return render_template("teams.html", team_id = team_id)
+    else:
+        return render_template("home.html")
+
+@app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
+def add_member():
+    if request.method == 'POST':
+        player_ucid = request.form['player_ucid']
+        if add_team_member(player_ucid):
+            print("PLAYER UCID: ", player_ucid)
+            return render_template("teams.html", player_ucid = player_ucid)
     else:
         return render_template("home.html")
 
