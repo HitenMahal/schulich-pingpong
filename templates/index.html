@@ -11,8 +11,13 @@
             <input type="submit" value="Sign In">
         </form>
         <h1>----------------------------------------------------------------------------------</h1>
-        <!-- {% for item in data%}
-            <p>{{item}}</p>
-        {% endfor %} -->
+        <form action="/register" method="POST">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <input type="text" name="name" placeholder="Full Name">
+            <input type="text" name="email" placeholder="Email">
+            <input type="text" name="ucid" placeholder="UCID">
+            <input type="submit" value="Register">
+        </form>
     </body>
 </html> 

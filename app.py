@@ -7,42 +7,53 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    init_db()
     data = dbTest()
     return render_template("index.html", data=data)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         if loginUser(username, password):
             print("USERNAME:",username, "PASSWORD:",password)
-            return render_template("home.html")
+            return render_template("home.html", username=username)
         else:
             return render_template("incorrectPassword.html")
     else:
         return render_template("index.html")
             
-@app.route('/stats', methods=['GET', 'POST'])
+@app.route('/stats', methods=['GET', 'POST'], endpoint='stats')
 def stats():
     if request.method == 'POST':
         return render_template("stats.html")
     else:
         return render_template("home.html")
 
-@app.route('/teams', methods=['GET', 'POST'])
-def stats():
+@app.route('/teams', methods=['GET', 'POST'], endpoint='teams')
+def teams():
     if request.method == 'POST':
         return render_template("teams.html")
     else:
         return render_template("home.html")
 
-@app.route('/rent', methods=['GET', 'POST'])
-def stats():
+@app.route('/rent', methods=['GET', 'POST'], endpoint='rent')
+def rent():
     if request.method == 'POST':
         return render_template("rent.html")
     else:
         return render_template("home.html")
+
+@app.route('/register', methods=['GET', 'POST'], endpoint='register')
+def register():
+    if request.method == 'POST':
+        if registerUser(request.form['username'], request.form['password'], request.form['name'], request.form['email'], request.form['ucid']):
+            return render_template("registerGood.html")
+        else:
+            return render_template("registerBad.html")
+    else:
+        return render_template("index.html")
 
 @app.teardown_appcontext
 def close_connection(exception):
