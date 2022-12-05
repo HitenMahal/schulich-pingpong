@@ -110,6 +110,12 @@ def delete_profile(UCID):
     cursor.execute("DELETE FROM ENDUSER WHERE UCID = {UCID}")
     cursor.close()
 
+def edit_profile(ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE ENDUSER SET UCID=UCID_value, name=name_value, google_email=google_email_value, user_type=user_type_value WHERE UCID= {ucid}")
+    cursor.close()
+
 def get_user_profile(UCID):
     db = connect_db()
     cursor = db.cursor()
@@ -132,38 +138,77 @@ def delete_stats(UCID):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM STATS WHERE UCID = {UCID}")
+    cursor.close()
+
+def edit_stats(ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE STATS SET stat_distinguisher = stat_distinguisher_value, matches_played = matches_played_value, matches_won = matches_won_value, hours_played = hours_played_value WHERE UCID = {UCID}")
+    cursor.close()
+
 
 def new_team(team_ID, team_name, team_type):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("INSERT INTO TEAM VALUES ({team_ID}, L_name_value, {team_name}, {team_type}")
+    cursor.close()
 
 def delete_team(team_ID):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM TEAM WHERE team_id = {team_ID}")
+    cursor.close()
+
+def edit_team(team_ID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE TEAM SET L_name = L_name_value, team_name = team_name_value, team_type = team_type_value WHERE team_id = {team_ID}")
+    cursor.close()
 
 def get_teamMember_stats(team_ID):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("SELECT s.UCID, s.stat_distinguisher, s.matches_played, s.matches_won, s.hours_player FROM STATS as s NATURAL JOIN (SELECT UCID FROM USER_IN_TEAM WHERE team_id  = {team_ID})")
+    cursor.close()
 
 def add_team_member(ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("INSERT INTO TEAM (UCID) VALUES (UCID = {ucid})")
+    cursor.close()
 
 def remove_team_member(ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM TEAM WHERE UCID = {ucid}")
+    cursor.close()
 
 def get_all_teams_with_user(ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("SELECT team_id FROM TEAM WHERE UCID = {ucid}")
+    cursor.close()
 
 def new_booking(schedule_num, ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("INSERT INTO BOOKING (SSchedule#, UCID) VALUES ( SSchedule# = {schedule}, UCID = {ucid})")
+    cursor.close()
+
+def delete_booking(time_slot):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM BOOKING WHERE for_timestamp = {time_slot}")
+    cursor.close()
+
+def new_rental(ucid, rental_id, start_time, return_time, deposit):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO RENTAL VALUES ({ucid}, {rental_id}, {start_time}, {return_time}, {deposit})")
+    cursor.close()
+
+def edit_rental(rental_id):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE RENTAL SET L_name = UCID = UCID_value, rental_id = rental_id_value, start_time = start_time_value, return_time = return_time_value, deposit = deposit_value WHERE rental_id= {rental_id}")
+    cursor.close()
