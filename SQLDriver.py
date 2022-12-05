@@ -60,7 +60,11 @@ def init_db():
     cursor.execute("CREATE TABLE Booking (forTimeStamp TEXT,scheduleNumber INTEGER,UCID INTEGER,PRIMARY KEY(forTimeStamp, scheduleNumber, UCID),FOREIGN KEY(UCID) REFERENCES Users(UCID),FOREIGN KEY(scheduleNumber) REFERENCES schedules(scheduleNumber));")
     # Rental
     cursor.execute("DROP TABLE IF EXISTS Rental")
+<<<<<<< HEAD
     cursor.execute("CREATE TABLE Rental(UCID INTEGER,rentalID INTEGER PRIMARY KEY,startTime TEXT,returnTime TEXT,deposit INTEGER,FOREIGN KEY(UCID) REFERENCES Users(UCID));")
+=======
+    cursor.execute("CREATE TABLE Rental(UCID INTEGER,rentalID INTEGER AUTO_INCREMENT,startTime TEXT,returnTIME TEXT,deposit INTEGER,PRIMARY KEY(UCID,rentalID),FOREIGN KEY(UCID) REFERENCES Users(UCID));")
+>>>>>>> a082d14abe4935f620bf5054d8b9c968270a4223
     # Equipment
     cursor.execute("DROP TABLE IF EXISTS Equipment")
     cursor.execute("CREATE TABLE Equipment(EType TEXT,maxRentalTime INTEGER,rentalID INTEGER,BName TEXT,PRIMARY KEY(EType),FOREIGN KEY(rentalID) REFERENCES rental(rentalID),FOREIGN KEY(BName) REFERENCES building(buildingName));")
@@ -260,6 +264,7 @@ def delete_booking(time_slot):
     cursor.close()
 
 def new_rental(ucid, start_time, return_time, deposit):
+<<<<<<< HEAD
     try:
         db = connect_db()
         cursor = db.cursor()
@@ -274,6 +279,18 @@ def new_rental(ucid, start_time, return_time, deposit):
             return False, "Rental was not succesfull, please try again"
     except Exception as e:
         return False, str(e)
+=======
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"INSERT INTO RENTAL VALUES ({ucid}, {start_time}, {return_time}, {deposit})")
+    db.commit()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
+>>>>>>> a082d14abe4935f620bf5054d8b9c968270a4223
     
 
 def edit_rental(rental_id):
