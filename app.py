@@ -5,6 +5,12 @@ from SQLDriver import *
 
 app = Flask(__name__)
 
+# GLOBAL STATIC
+CurrentUser = None
+
+
+# END GLOBAL STATIC
+
 @app.route('/')
 def index():
     init_db()
@@ -14,17 +20,37 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if loginUser(int(username), password):
-            print("USERNAME:",username, "PASSWORD:",password)
-            return render_template("home.html", username=username)
+    try:
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            result, CurrentUser = loginUser(int(username), password)
+            if result:
+                print("USERNAME:",username, "PASSWORD:",password)
+                return render_template("home.html", name=("Hi " + CurrentUser[0][2] + "!"))
+            else:
+                return render_template("index.html", LOGIN_ERROR_MSG="Invalid username or password")
         else:
-            return render_template("incorrectPassword.html")
+            return render_template("index.html")
+    except Exception as e:
+        return render_template("index.html", LOGIN_ERROR_MSG=str(e))
+
+
+@app.route('/register', methods=['GET', 'POST'], endpoint='register')
+def register():
+    if request.method == 'POST':
+        response = add_new_profile(request.form['ucid'], request.form['password'], request.form['name'], request.form['email'])
+        if response == "SUCCESS":
+            return render_template("index.html",REGISTER_MSG="Registration successful")
+        elif response == "FAILURE":
+            return render_template("index.html",REGISTER_MSG="Registration failed")
+        elif response == "UNIQUE constraint failed: EndUser.UCID":
+            return render_template("index.html",REGISTER_MSG="UCID already exists in the system, please login")
+        else:
+            return render_template("index.html",REGISTER_MSG=response)
     else:
         return render_template("index.html")
-            
+        
 @app.route('/stats', methods=['GET', 'POST'], endpoint='stats')
 def stats():
     if request.method == 'POST':
@@ -95,16 +121,6 @@ def rent():
         return render_template("rent.html")
     else:
         return render_template("home.html")
-
-@app.route('/register', methods=['GET', 'POST'], endpoint='register')
-def register():
-    if request.method == 'POST':
-        if registerUser(request.form['username'], request.form['password'], request.form['name'], request.form['email'], request.form['ucid']):
-            return render_template("registerGood.html")
-        else:
-            return render_template("registerBad.html")
-    else:
-        return render_template("index.html")
 
 @app.teardown_appcontext
 def close_connection(exception):
