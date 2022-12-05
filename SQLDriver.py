@@ -20,4 +20,12 @@ def dbTest():
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM people")
-    return cursor.fetchall()
+    data = cursor.fetchall()
+    return [str(x) for x in data]
+
+def loginUser(username, password):
+    if username=="admin" and password=="admin":
+        return True
+    else:
+        return False
+
