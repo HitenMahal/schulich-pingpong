@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Schulich Ping-Pong</title>
+    </head>
+    <body>
+        <h1> Booking </h1>
+        <form action="/book_spot" method="POST">
+            <input type = "text" name = "time_slot" placeholder = "Time Slot (24 hour time)">
+            <input type = "text" name = "table_ID" placeholder = "Table ID">
+            <input type = "text" name = "ucid" placeholder = "UCID">
+            <input type = "text" name = "schedule_ID" placeholder = "Schedule ID">
+            <input type="submit" value="Booking">
+        </form>
+        {{msg}}
+        <h1> Booking </h1>
+        <form action="/delete_spot" method="POST">
+            <input type="submit" value="Rent">
+        </form>
+        <h1>----------------------------------------------------------------------------------</h1>
+    </body>
+</html> 

@@ -51,7 +51,7 @@ def init_db():
     cursor.execute("CREATE TABLE Building_Tables(BName TEXT,tableNumber INTEGER,PRIMARY KEY(BName, tableNumber),FOREIGN KEY(BName) REFERENCES building(buildingName));")
     # Schedule_Time_Slots
     cursor.execute("DROP TABLE IF EXISTS Schedule_Time_Slots")
-    cursor.execute("CREATE TABLE Schedule_Time_Slots(scheduleNumber INTEGER,timeSlot INTEGER,PRIMARY KEY(scheduleNumber, timeSlot));")
+    cursor.execute("CREATE TABLE Schedule_Time_Slots(timeSlot INTEGER, UCID INTEGER, tableID INTEGER, scheduleNumber INTEGER,PRIMARY KEY(scheduleNumber, timeSlot));")
     # Schedule
     cursor.execute("DROP TABLE IF EXISTS Schedule")
     cursor.execute("CREATE TABLE Schedule (tableNumber INTEGER,scheduleNumber INTEGER,PRIMARY KEY(tableNumber, scheduleNumber),FOREIGN KEY(tableNumber)	REFERENCES availableTables(tableNumber));")
@@ -245,7 +245,7 @@ def get_all_teams_with_user(ucid):
     cursor.execute(f"SELECT team_id FROM TEAM WHERE UCID = {ucid}")
     cursor.close()
 
-def new_booking(schedule_num, ucid):
+def new_schedule(schedule_num, ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"INSERT INTO BOOKING (SSchedule#, UCID) VALUES ( SSchedule# = {schedule_num}, UCID = {ucid})")
@@ -402,19 +402,29 @@ def delete_building(name):
     db.commit()
     cursor.close()   
 
-def add_time_slot(schedule_num, time_slot): 
+def add_time_slot(time_slot, ucid, table_ID, schedule_ID): 
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO SCHEDULE_TIME_SLOTS VALUES ({schedule_num}, {time_slot})")
+    cursor.execute(f"INSERT INTO SCHEDULE_TIME_SLOTS VALUES ({int(time_slot)}, {int(ucid)}, {int(table_ID)}, {int(schedule_ID)})")
     db.commit()
-    cursor.close()   
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
-def remove_time_slot(schedule_num, time_slot):
+def remove_time_slot(time_slot, ucid, table_ID, schedule_ID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE schedule_num = {schedule_num}, time_slot = {time_slot}")
+    cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE time_slot = {int(time_slot)}, UCID = {int(ucid)}, ")
     db.commit()
-    cursor.close()  
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def add_table(building_name, table_num):
     db = connect_db()

@@ -157,6 +157,41 @@ def newRental():
     else:
         return render_template("rent.html",rentalMsg=msg)
 
+@app.route('/booking', methods=['GET', 'POST'], endpoint='booking')
+def booking():
+    if request.method == 'POST':
+        return render_template("booking.html")
+    else:
+        return render_template("home.html")
+
+@app.route('/book_spot', methods=['GET', 'POST'], endpoint='book_spot')
+def book_spot():
+    if request.method == 'POST':
+        time_slot = request.form['time_slot']
+        table_ID = request.form['table_ID']
+        ucid = request.form['ucid']
+        schedule_ID = request.form['schedule_ID']
+        success = add_time_slot(time_slot, ucid, table_ID, schedule_ID)
+        if success:
+            print("Time Slot: ", time_slot, "UCID: ", ucid, "Table ID: ", table_ID)
+        return render_template("booking.html", msg = "Booked!")
+    else:
+        return render_template("home.html")
+
+@app.route('/delete_spot', methods=['GET', 'POST'], endpoint='delete_spot')
+def delete_spot():
+    if request.method == 'POST':
+        time_slot = request.form['time_slot']
+        table_ID = request.form['table_ID']
+        ucid = request.form['ucid']
+        schedule_ID = request.form['schedule_ID']
+        success = remove_time_slot(time_slot, ucid, table_ID, schedule_ID)
+        if success:
+            print("Time Slot: ", time_slot, "UCID: ", ucid, "Table ID: ", table_ID)
+        return render_template("booking.html", msg = "Booking Deleted")
+    else:
+        return render_template("home.html")
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
