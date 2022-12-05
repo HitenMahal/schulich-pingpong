@@ -39,7 +39,7 @@ def init_db():
     cursor.execute("CREATE TABLE User_Is_In_Team(UCID INTEGER,teamID INTEGER,PRIMARY KEY(UCID, teamID),FOREIGN KEY (UCID) REFERENCES Users (UCID),FOREIGN KEY (teamID) REFERENCES Team (teamID));")
     # Game
     cursor.execute("DROP TABLE IF EXISTS Game")
-    cursor.execute("CREATE TABLE Game (LName TEXT,matchID INTEGER,score	INTEGER,matchDate TEXT,PRIMARY KEY(LName, matchID),FOREIGN KEY(Lname) REFERENCES LeaderBoard(LName));")
+    cursor.execute("CREATE TABLE Game (LName TEXT,matchID INTEGER,score	Text,matchDate TEXT,PRIMARY KEY(LName, matchID),FOREIGN KEY(Lname) REFERENCES LeaderBoard(LName));")
     # Game_Player_Id
     cursor.execute("DROP TABLE IF EXISTS Game_Player_Id")
     cursor.execute("CREATE TABLE Game_Player_Id (matchID INTEGER,PUCID INTEGER,PRIMARY KEY(matchID, PUCID),FOREIGN KEY(matchID)	REFERENCES gamePlayed(matchID),FOREIGN KEY(PUCID) REFERENCES Users(UCID));")
@@ -74,6 +74,10 @@ def initDefaultUsersAndAdmins():
     # Default Users
     cursor.execute("INSERT INTO EndUser VALUES ( 1, 'pass', 'John Doe', 'john.doe@ucalgary.ca', 'USER')")
     cursor.execute("INSERT INTO Stats VALUES (1, 1, 10, 20, 30)")
+    cursor.execute("INSERT INTO Team VALUES (69, 'crazy Time board', 'crazy people', 'Pong Pros')")
+    cursor.execute("INSERT INTO User_Is_In_Team VALUES (1, 69)")
+    cursor.execute("INSERT INTO Game VALUES ('crazy Time board', 1234, 'Crazy people: 14      Sane people: 21', '2013,02,10')")
+    cursor.execute("INSERT INTO Game VALUES ('crazy Time board', 4321, 'Crazy people: 21      Sane people: 14', '2013,02,10')")
     cursor.execute("INSERT INTO Leaderboard VALUES ('crazy Time board', 'crazy Event', 'The Crazy Building')")
     cursor.execute("INSERT INTO Building VALUES ('The Crazy Building', 'In a crazy Location', 'Crazy Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Amazing Building', 'In a Amazing Location', 'Amazing Studies')")
@@ -243,7 +247,37 @@ def get_all_teams_with_user(ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"SELECT team_id FROM TEAM WHERE UCID = {ucid}")
-    cursor.close()
+    teams = cursor.fetchall()
+    if len(teams) == 1:
+        cursor.close()
+        return True, teams
+    else:
+        cursor.close()
+        return False, None
+
+def getUserTeamsID(ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT teamID FROM User_Is_In_Team WHERE UCID = {ucid}")
+    teams = cursor.fetchall()
+    if len(teams) == 1:
+        cursor.close()
+        return True, teams
+    else:
+        cursor.close()
+        return False, None
+
+def getUserTeamsLeaderBoard(userTeamID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT LName FROM Team WHERE teamID = {userTeamID}")
+    teams = cursor.fetchall()
+    if len(teams) == 1:
+        cursor.close()
+        return True, teams
+    else:
+        cursor.close()
+        return False, None
 
 def new_booking(schedule_num, ucid):
     db = connect_db()
@@ -290,6 +324,14 @@ def new_match(match_id, ucid, score, date):
     db.commit()
     cursor.close()
 
+def getMatches(leaderboardName):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM Game WHERE LNAME = '{leaderboardName}'")
+    matches = cursor.fetchall()
+    cursor.close()
+    return matches
+
 def cancel_match(match_id):
     db = connect_db()
     cursor = db.cursor()
@@ -303,6 +345,15 @@ def new_leaderboard(name, event_name, building_name):
     cursor.execute(f"INSERT INTO LEADERBOARD (Name, E_name, B_name) VALUES (Name = {name}, E_name = {event_name}, B_name = {building_name})")
     db.commit()
     cursor.close()
+
+def getLeaderboards(LeaderboardName):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM LEADERBOARD WHERE LName = '{LeaderboardName}'")
+    db.commit()
+    leaderboards = cursor.fetchall()
+    cursor.close()
+    return leaderboards
 
 def delete_leaderboard(name):
     db = connect_db()

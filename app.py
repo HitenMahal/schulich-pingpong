@@ -23,6 +23,7 @@ def index():
 def login():
     try:
         if request.method == 'POST':
+            global CurrentUser
             username = request.form['username']
             password = request.form['password']
             result, CurrentUser = loginUser(int(username), password)
@@ -156,6 +157,25 @@ def newRental():
             return render_template("rent.html",rentalMsg="Rental Successful, Please pickup your rental at the ESS Office at ENE 134A")
     else:
         return render_template("rent.html",rentalMsg=msg)
+
+@app.route('/leaderBoards', methods=['GET', 'POST'], endpoint='leaderBoards')
+def leaderBoards():
+    if request.method == 'POST':
+        counter = 0
+        getAllTeamInfoResult, currentUserTeamsID = getUserTeamsID(CurrentUser[0][0])
+        if getAllTeamInfoResult:
+            getUserLeaderboardsResult, userLeaderboards = getUserTeamsLeaderBoard(currentUserTeamsID[0][0])
+            if getUserLeaderboardsResult:
+                matches = getMatches(userLeaderboards[0][0])
+                displayMatch = ''
+                displayScoreAndTime = ''
+                for match in matches:
+                    counter += 1
+                    displayMatch = match[0]
+                    displayScoreAndTime += match[2] + " " + match[3] + " "
+                return render_template("leaderboards.html", displayMatch = displayMatch, displayScoreAndTime = displayScoreAndTime, matchNumber = counter)
+    else:
+        return render_template("teams.html")
 
 @app.teardown_appcontext
 def close_connection(exception):
