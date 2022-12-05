@@ -20,12 +20,23 @@ def dbTest():
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM people")
-    return cursor.fetchall()
+    data = cursor.fetchall()
+    return [str(x) for x in data]
+
+def loginUser(username, password):
+    if username=="admin" and password=="admin":
+        return True
+    else:
+        return False
 
 def add_new_profile(UCID, Username, Email, Type):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"INSERT INTO ENDUSER (UCID, name, google_email, user_type) VALUES ( {UCID} , {Username}, {Email}, {Type} )")
+    if cursor.rowcount == 1:
+        return True
+    else:
+        return False
 
 def delete_profile(UCID):
     db = connect_db()
