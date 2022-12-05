@@ -261,3 +261,62 @@ def delete_equipment(equipment_id):
     cursor.execute("DELETE FROM EQUIPMENT WHERE equipment_id = {equipment_id}")
     cursor.close()
 
+def add_player_ID(match_id, player_ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO MATCH_PLAYER_IDS VALUES ({match_id}, {player_ucid})")
+    cursor.close()
+
+def remove_player_ID(player_id, player_ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM MATCH_PLAYER_IDS WHERE player_id = {player_id}, p_ucid = {player_ucid}")
+    cursor.close()
+
+def add_event(building_name, event_name):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO EVENTS VALUES ({building_name}, {event_name})")
+    cursor.close()
+
+def remove_event(building_name, event_name):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM EVENTS WHERE B_name = {building_name}, E_name = {event_name}")
+    cursor.close()
+
+def new_building(name, location, fac):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO BUILDING (Name, Location,Facilities) VALUES (Name = {name}, Location = {location},Facilities = {fac})")
+    cursor.close()
+
+def delete_building(name):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM BUILDING WHERE Name = {name}")
+    cursor.close()   
+
+def add_time_slot(schedule_num, time_slot): 
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO SCHEDULE_TIME_SLOTS VALUES ({schedule_num}, {time_slot})")
+    cursor.close()   
+
+def remove_time_slot(schedule_num, time_slot):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM SCHEDULE_TIME_SLOTS WHERE schedule_num = {schedule_num}, time_slot = {time_slot}")
+    cursor.close()  
+
+def add_table(building_name, table_num):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO TABLE VALUES ({building_name}, {table_num})")
+    cursor.close()  
+
+def remove_table(building_name, table_num):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM TABLE WHERE b_name= {building_name}, table_num= {table_num}")
+    cursor.close()  
