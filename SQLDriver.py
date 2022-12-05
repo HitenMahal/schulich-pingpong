@@ -169,16 +169,26 @@ def edit_stats(ucid):
 def new_team(team_ID, team_name, team_type):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO TEAM VALUES ({team_ID}, L_name_value, {team_name}, {team_type}")
+    cursor.execute(f"INSERT INTO Team VALUES ({int(team_ID)}, 'drop-in', '{team_type}', '{team_name}'")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def delete_team(team_ID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"DELETE FROM TEAM WHERE team_id = {team_ID}")
+    cursor.execute(f"DELETE FROM Team WHERE team_id = {int(team_ID)}")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def edit_team(team_ID):
     db = connect_db()
@@ -198,7 +208,12 @@ def add_team_member(ucid):
     cursor = db.cursor()
     cursor.execute(f"INSERT INTO TEAM (UCID) VALUES (UCID = {ucid})")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def remove_team_member(ucid):
     db = connect_db()

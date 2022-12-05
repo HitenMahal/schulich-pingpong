@@ -5,15 +5,19 @@
     </head>
     <body>
         <h1> Schulich Ping-Pong </h1>
-        <h1>{{team_id, team_name, team_type}}</h1>
-        <form action="/stats" method="POST">
-            <input type="submit" value="See Stats">
+        <h1> Team Submission</h1>
+        <form action="/SUBMIT_TEAMS" method="POST">
+            
+            <input type = "text" name = "team_name" placeholder = "Team Name">
+            <input type = "text" name = "team_type" placeholder = "Team Type">
+            <input type = "text" name = "team_id" placeholder = "ID">
+            <input type = "submit" value="Submit">
         </form>
-        <form action="/teams" method="POST">
-            <input type="submit" value="Teams">
-        </form>
-        <form action="/rent" method="POST">
-            <input type="submit" value="Rent">
+        <h1> Team Deletation</h1>
+        <form action="/Delete_Teams" method="POST">
+
+            <input type = "text" name = "team_id" placeholder = "ID">
+            <input type="submit" value="Delete">
         </form>
         <h1>----------------------------------------------------------------------------------</h1>
     </body>
