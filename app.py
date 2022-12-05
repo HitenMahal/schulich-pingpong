@@ -8,15 +8,16 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     init_db()
-    data = dbTest()
-    return render_template("index.html", data=data)
+    initDefaultUsersAndAdmins()
+    dbTest()
+    return render_template("index.html")
 
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if loginUser(username, password):
+        if loginUser(int(username), password):
             print("USERNAME:",username, "PASSWORD:",password)
             return render_template("home.html", username=username)
         else:

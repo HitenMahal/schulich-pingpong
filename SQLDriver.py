@@ -4,7 +4,7 @@ from flask import g
 def connect_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect('lib/users')
+        db = g._database = sqlite3.connect('lib/SPP.db')
     return db
 
 def init_db():
@@ -65,32 +65,41 @@ def init_db():
     cursor.execute("DROP TABLE IF EXISTS Equipment")
     cursor.execute("CREATE TABLE equipment(EType TEXT,maxRentalTime INTEGER,rentalID INTEGER,BName TEXT,PRIMARY KEY(EType),FOREIGN KEY(rentalID) REFERENCES rental(rentalID),FOREIGN KEY(BName) REFERENCES building(buildingName));")
     
+    db.commit()
     cursor.close()
 
 def initDefaultUsersAndAdmins():
     db = connect_db()
     cursor = db.cursor()
     # Default Users
-    cursor.execute("INSERT INTO EndUser VALUES ( 10101011, 'password', 'John Doe', 'john.doe@ucalgary.ca', 'USER')")
-    cursor.execute("INSERT INTO EndUser VALUES ( 10187026, 'pass', 'Hiten Mahalwar', 'hiten.mahalwar@ucalgary.ca', 'ADMIN')")
+    cursor.execute("INSERT INTO EndUser VALUES ( 1, 'pass', 'John Doe', 'john.doe@ucalgary.ca', 'USER')")
+    print(cursor.rowcount, "INIT USER")
+    cursor.execute("INSERT INTO EndUser VALUES ( 2, 'password', 'Hiten Mahalwar', 'hiten.mahalwar@ucalgary.ca', 'ADMIN')")
+    print(cursor.rowcount, "INIT ADMIN")
+    print("USERNAME: 1, PASSWORD: pass")
+    print("USERNAME: 2, PASSWORD: password")
+    db.commit()
     cursor.close()
 
 def dbTest():
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM people")
+    cursor.execute("SELECT * FROM EndUser")
     data = cursor.fetchall()
+    print(data)
     cursor.close()
-    return [str(x) for x in data]
+    data = [str(x) for x in data]
+    return data
 
-def loginUser(username, password):
+def loginUser(UCID, password):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"SELECT * FROM ENDUSER WHERE name = '{username}' AND password = '{password}'")
-    cursor.close()
-    if cursor.rowcount == 1:
+    cursor.execute(f"SELECT * FROM EndUser WHERE UCID={UCID} AND password='{password}'")
+    if len(cursor.fetchall()) == 1:
+        cursor.close()
         return True
     else:
+        cursor.close()
         return False
 
 
@@ -98,10 +107,12 @@ def add_new_profile(UCID, Password, Name, Email):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"INSERT INTO ENDUSER (UCID, password, name, email, user_type) VALUES ( {UCID} , {Password}, {Name}, {Email}, 'USER')")
-    cursor.close()
+    print(cursor.rowcount, "for REGISTER USER")
     if cursor.rowcount == 1:
+        cursor.close()
         return True
     else:
+        cursor.close()
         return False
 
 def delete_profile(UCID):
