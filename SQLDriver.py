@@ -216,7 +216,12 @@ def remove_team_member(ucid):
     cursor = db.cursor()
     cursor.execute(f"DELETE FROM TEAM WHERE UCID = {ucid}")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def get_all_teams_with_user(ucid):
     db = connect_db()

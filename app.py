@@ -65,6 +65,23 @@ def add_member():
     else:
         return render_template("home.html")
 
+@app.route('/remove_member', methods=['GET', 'POST'], endpoint='remove_member')
+def remove_member():
+    if request.method == 'POST':
+        player_ucid = request.form['player_ucid']
+        if remove_team_member(player_ucid):
+            print("PLAYER UCID: ", player_ucid)
+            return render_template("teams.html", player_ucid = player_ucid)
+    else:
+        return render_template("home.html")
+
+@app.route('/editTeams', methods=['GET', 'POST'], endpoint='editTeams')
+def editTeams():
+    if request.method == 'POST':
+            return render_template("editTeams.html")
+    else:
+        return render_template("home.html")
+
 @app.route('/teams', methods=['GET', 'POST'], endpoint='teams')
 def teams():
     if request.method == 'POST':
