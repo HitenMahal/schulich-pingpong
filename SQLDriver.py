@@ -212,3 +212,52 @@ def edit_rental(rental_id):
     cursor = db.cursor()
     cursor.execute("UPDATE RENTAL SET L_name = UCID = UCID_value, rental_id = rental_id_value, start_time = start_time_value, return_time = return_time_value, deposit = deposit_value WHERE rental_id= {rental_id}")
     cursor.close()
+
+def new_match(match_id, ucid, score, date):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO MATCH VALUES ({match_id}, {ucid}, {score}, {date})")
+    cursor.close()
+
+def cancel_match(match_id):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM MATCH WHERE match_id = {match_id}")
+    cursor.close()
+
+def new_leaderboard(name, event_name, building_name):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO LEADERBOARD (Name, E_name, B_name) VALUES (Name = {name}, E_name = {event_name}, B_name = {building_name})")
+    cursor.close()
+
+def delete_leaderboard(name):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM LEADERBOARD WHERE name = {name}")
+    cursor.close()
+
+def new_schedule(table_num, schedule_num):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO SCHEDULE VALUES ({table_num}, {schedule_num})")
+    cursor.close()
+
+def delete_schedule(table_num, schedule_num):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM SCHEDULE WHERE table_num = {table_num}, schedule_num = {schedule_num}")
+    cursor.close()
+
+def new_equipment(type, max_rental_time, building_name):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO EQUIPMENT VALUES ({type}, {max_rental_time}, {building_name})")
+    cursor.close()
+
+def delete_equipment(equipment_id):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM EQUIPMENT WHERE equipment_id = {equipment_id}")
+    cursor.close()
+
