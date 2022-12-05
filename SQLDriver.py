@@ -87,3 +87,8 @@ def remove_team_member(ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM TEAM WHERE UCID = {ucid}")
+
+def get_all_teams_with_user(ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT team_id FROM TEAM WHERE UCID = {ucid}")
