@@ -32,16 +32,23 @@ def stats():
     else:
         return render_template("home.html")
 
-@app.route('/teams', methods=['GET', 'POST'], endpoint='teams')
-def teams():
+@app.route('/SUBMIT_TEAMS', methods=['GET', 'POST'], endpoint='SUBMIT_TEAMS')
+def SUBMIT_TEAMS():
     if request.method == 'POST':
         team_name = request.form['team_name']
         team_type = request.form['team_type']
         team_id = request.form['team_id']
-        player_ucid = request.form['player_ucid']
+        # player_ucid = request.form['player_ucid']
         if new_team(team_id, team_name, team_type):
             print("TEAM ID: ", team_id, "TEAM NAME: ", team_name, "TEAM TYPE: ", team_type)
             return render_template("teams.html", team_id = team_id, team_name = team_name, team_type = team_type)
+    else:
+        return render_template("home.html")
+
+@app.route('/teams', methods=['GET', 'POST'], endpoint='teams')
+def teams():
+    if request.method == 'POST':
+            return render_template("teams.html")
     else:
         return render_template("home.html")
 
