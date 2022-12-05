@@ -41,6 +41,8 @@ class start:
 
     input = 'selected tab'
 
+# -----------------------------------------------------------------------------------------------
+
     if input == 'stats':
 
         isNewUser = input("Existing user? (Yes or No), to delete stats (Delete)\n")
@@ -125,7 +127,15 @@ class start:
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    
+    elif input == "booking":
+
+        booking_status = input("New booking or delete existing?")
+
+        if booking_status == "new":
+
+            selected_table = 2
+
+            
 
 
 

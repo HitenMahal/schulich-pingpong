@@ -92,3 +92,8 @@ def get_all_teams_with_user(ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute("SELECT team_id FROM TEAM WHERE UCID = {ucid}")
+
+def new_booking(schedule_num, ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO BOOKING (SSchedule#, UCID) VALUES ( SSchedule# = {schedule}, UCID = {ucid})")
