@@ -21,10 +21,20 @@ def login():
             print("USERNAME:",username, "PASSWORD:",password)
             return render_template("home.html", username=username)
         else:
-            return render_template("incorrectPassword.html")
+            return render_template("index.html", LOGIN_ERROR_MSG="Invalid username or password")
     else:
         return render_template("index.html")
-            
+
+@app.route('/register', methods=['GET', 'POST'], endpoint='register')
+def register():
+    if request.method == 'POST':
+        if add_new_profile(request.form['ucid'], request.form['password'], request.form['name'], request.form['email']):
+            return render_template("index.html",REGISTER_MSG="Registration successful")
+        else:
+            return render_template("index.html",REGISTER_MSG="Registration failed")
+    else:
+        return render_template("index.html")
+        
 @app.route('/stats', methods=['GET', 'POST'], endpoint='stats')
 def stats():
     if request.method == 'POST':
@@ -51,16 +61,6 @@ def rent():
         return render_template("rent.html")
     else:
         return render_template("home.html")
-
-@app.route('/register', methods=['GET', 'POST'], endpoint='register')
-def register():
-    if request.method == 'POST':
-        if registerUser(request.form['username'], request.form['password'], request.form['name'], request.form['email'], request.form['ucid']):
-            return render_template("registerGood.html")
-        else:
-            return render_template("registerBad.html")
-    else:
-        return render_template("index.html")
 
 @app.teardown_appcontext
 def close_connection(exception):

@@ -10,14 +10,15 @@
             <input type="password" name="password" placeholder="Password">
             <input type="submit" value="Sign In">
         </form>
+        <h1>{{LOGIN_ERROR_MSG}}</h1>
         <h1>----------------------------------------------------------------------------------</h1>
         <form action="/register" method="POST">
-            <input type="text" name="username" placeholder="Username">
+            <input type="text" name="ucid" placeholder="UCID">
             <input type="password" name="password" placeholder="Password">
             <input type="text" name="name" placeholder="Full Name">
             <input type="text" name="email" placeholder="Email">
-            <input type="text" name="ucid" placeholder="UCID">
             <input type="submit" value="Register">
         </form>
+        <h1>{{REGISTER_ERROR_MSG}}</h1>
     </body>
 </html> 
