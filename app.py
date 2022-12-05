@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    init_db()
     data = dbTest()
     return render_template("index.html", data=data)
 
@@ -43,6 +44,16 @@ def rent():
         return render_template("rent.html")
     else:
         return render_template("home.html")
+
+@app.route('/register', methods=['GET', 'POST'], endpoint='register')
+def register():
+    if request.method == 'POST':
+        if registerUser(request.form['username'], request.form['password'], request.form['name'], request.form['email'], request.form['ucid']):
+            return render_template("registerGood.html")
+        else:
+            return render_template("registerBad.html")
+    else:
+        return render_template("index.html")
 
 @app.teardown_appcontext
 def close_connection(exception):
