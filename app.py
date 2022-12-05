@@ -68,11 +68,13 @@ def SUBMIT_TEAMS():
     if request.method == 'POST':
         team_name = request.form['team_name']
         team_type = request.form['team_type']
-        team_id = request.form['team_id']
         # player_ucid = request.form['player_ucid']
-        if new_team(int(team_id), team_name, team_type):
+        success, team_id = new_team(team_name, team_type)
+        if success:
             print("TEAM ID: ", team_id, "TEAM NAME: ", team_name, "TEAM TYPE: ", team_type)
-            return render_template("teams.html", team_id = team_id, team_name = team_name, team_type = team_type)
+            return render_template("teams.html", msg="Team created successfully")
+        else:
+            return render_template("teams.html", msg=team_id)
     else:
         return render_template("home.html")
 
@@ -127,16 +129,6 @@ def rent():
     else:
         return render_template("home.html")
 
-@app.route('/register', methods=['GET', 'POST'], endpoint='register')
-def register():
-    if request.method == 'POST':
-        if registerUser(request.form['username'], request.form['password'], request.form['name'], request.form['email'], request.form['ucid']):
-            return render_template("registerGood.html")
-        else:
-            return render_template("registerBad.html")
-    else:
-        return render_template("index.html")
-
 @app.route('/newRental', methods=['GET', 'POST'], endpoint='newRental')
 def newRental():
     # userUCID = getUCID()
@@ -146,7 +138,7 @@ def newRental():
     current_hour = now.strftime("%H")
     hour = int(current_hour)
     current_minute = now.strftime("%M")
-    current_time = now.strftime("%H%M")
+    current_time = now.strftime("%H:%M")
     rentTime = request.form['rentTime']
     for i in range(int(rentTime[0])):
         if (hour < 24):
@@ -154,15 +146,16 @@ def newRental():
         else:
             hour == 0
     returnTime = str(hour) + ":" + current_minute
-    deposit = 5 * paddle[0]
+    deposit = 5 * int(paddle[0])
     EType = paddle[1:]
     max_rental_time = rentTime[0]
     buildingName = request.form['BName']
-    if new_rental(userUCID, current_time, returnTime, deposit):
-        if new_equipment(EType, max_rental_time, buildingName):
-            return render_template("rent.html")
+    success, msg = new_rental(userUCID, current_time, returnTime, deposit)
+    if success:
+        if update_equipment_rental(EType, msg):
+            return render_template("rent.html",rentalMsg="Rental Successful, Please pickup your rental at the ESS Office at ENE 134A")
     else:
-        return render_template("home.html")
+        return render_template("rent.html",rentalMsg=msg)
 
 @app.teardown_appcontext
 def close_connection(exception):
