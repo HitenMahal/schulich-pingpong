@@ -29,3 +29,12 @@ def loginUser(username, password):
     else:
         return False
 
+def add_new_profile(UCID, Username, Email, Type):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"INSERT INTO ENDUSER (UCID, name, google_email, user_type) VALUES ( {UCID} , {Username}, {Email}, {Type} )")
+    if cursor.rowcount == 1:
+        return True
+    else:
+        return False
+

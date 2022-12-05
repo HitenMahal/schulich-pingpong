@@ -1,26 +1,37 @@
+import SQLDriver
 class start:
 
-    validUser = 0 # starts with user info is incorrect
+    account_status = input("Login or new account")
 
-    while validUser == 0:
+    if account_status == 'login':
 
-        username = input("Enter Username: ")
+        validUser = 0 # starts with user info is incorrect
 
-        password = input("Enter Password: ")
+        while validUser == 0:
 
-        ucid = input("Enter UCID: ")
+            username = input("Enter Username: ")
 
-        SQLDriver.loginUser(username, password, ucid) #login start
-        # Returns true (1) if user info is correct, returns false (0) if info is incorrect
+            password = input("Enter Password: ")
 
-        if 1:
+            ucid = input("Enter UCID: ")
 
-            validUser = 1
-            break
-        # when user info is correct breaks out of loop and continues to homepage
+            SQLDriver.loginUser(username, password, ucid) #login start
+            # Returns true (1) if user info is correct, returns false (0) if info is incorrect
 
+            if 1:
 
+                validUser = 1
+                break
+            # when user info is correct breaks out of loop and continues to homepage
 
+    elif account_status == 'new account':
+
+        newUCID = input("Enter UCID")
+        newUsername = input("Enter Username")
+        newEmail = input("Enter email") 
+        newType = input("User Type")
+
+        SQLDriver.add_new_profile(newUCID, newUsername, newEmail, newType)
     #user click on certain tab
 
     input = 'selected tab'
@@ -89,7 +100,46 @@ class start:
 
     elif input == 'booking':
 
-        
+        checker = 0
+
+        while checker == 0:
+
+            building_input = input("Select Building")
+
+            building_name = SQLDriver.Building(building_input) #see if requested building is valid
+
+            if building_name == 1:
+
+                table_input = input("Select a table to play at")
+
+                table_id = SQLDriver.table(table_input, building_name.name) # check if table exists
+
+                if table_id == 1:
+
+                    requested_time = input("Select a time slot")
+
+                    schedule_id = SQLDriver.schedule(table_id.id, building_name.name, requested_time)
+
+                    if schedule_id == 1:
+
+                        print("Time slot resevered for " + username + " in " + building_name.name + " ,table " + table_id.id + " at " + schedule_id.time)
+
+                        checker = 1
+                        
+                        
+                    else:
+
+                        print("Time slot not available")
+
+                else:
+
+                    print("Table not valid")
+
+            else:
+
+                print("Building not valid")        
+
+
 
 
 
