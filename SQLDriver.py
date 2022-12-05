@@ -43,3 +43,27 @@ def add_new_profile(UCID, Username, Email, Type):
     else:
         return False
 
+def delete_profile(UCID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM ENDUSER WHERE UCID = {UCID}")
+
+def get_user_profile(UCID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM ENDUSER WHERE UCID = {UCID}")
+
+def get_user_stats(UCID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM STATS WHERE UCID = {UCID}")
+
+def add_stats(UCID, MatchesWon, MatchesPlayed, HoursPlayed):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO STATS VALUES (UCID, stat_distinguisher, {MatchesPlayed}, {MatchesWon}, {HoursPlayed})")
+
+def delete_stats(UCID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO STATS VALUES (UCID, stat_distinguisher, {MatchesPlayed}, {MatchesWon}, {HoursPlayed})")

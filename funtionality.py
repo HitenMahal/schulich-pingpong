@@ -1,7 +1,7 @@
 import SQLDriver
 class start:
 
-    account_status = input("Login or new account")
+    account_status = input("Login or new account or delete account")
 
     if account_status == 'login':
 
@@ -15,7 +15,7 @@ class start:
 
             ucid = input("Enter UCID: ")
 
-            SQLDriver.loginUser(username, password, ucid) #login start
+            SQLDriver.get_user_profile(username, password, ucid) #login start
             # Returns true (1) if user info is correct, returns false (0) if info is incorrect
 
             if 1:
@@ -32,20 +32,43 @@ class start:
         newType = input("User Type")
 
         SQLDriver.add_new_profile(newUCID, newUsername, newEmail, newType)
+
+    elif delete_profile == 'delete':
+        
+        newUCID = input("Enter UCID of account to delete")
+        SQLDriver.delete_profile(newUCID)
     #user click on certain tab
 
     input = 'selected tab'
 
     if input == 'stats':
 
-        stats = SQLDriver.userStats(ucid)
+        isNewUser = input("Existing user? (Yes or No), to delete stats (Delete) ")
 
-        print("Matches won: " + stats.wins)
+        if isNewUser == "No":
 
-        print("Matches played: " + stats.gamesPlayed)
+            stats = SQLDriver.get_user_stats(ucid)
 
-        print("Hours played: " + stats.timeSpent)
+            print("Matches won: " + stats.wins)
 
+            print("Matches played: " + stats.gamesPlayed)
+
+            print("Hours played: " + stats.timeSpent)
+
+        elif isNewUser == "Yes":
+            
+            newMatchesWon = input("Enter matches won")
+            newMatchesPlayed = input("Enter matches played")
+            newHoursPlayed = input("Enter hours played")
+
+            SQLDriver.add_stats(ucid, newMatchesWon, newMatchesPlayed, newHoursPlayed )
+
+        elif isNewUser == "Delete":
+
+            dID = input("Enter UCID of account's stats to delete")
+            SQLDriver.delete_stats(dID)
+            
+        
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
     elif input == 'team':
