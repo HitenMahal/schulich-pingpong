@@ -5,6 +5,12 @@ from SQLDriver import *
 
 app = Flask(__name__)
 
+# GLOBAL STATIC
+CurrentUser = None
+
+
+# END GLOBAL STATIC
+
 @app.route('/')
 def index():
     init_db()
@@ -18,9 +24,10 @@ def login():
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
-            if loginUser(int(username), password):
+            result, CurrentUser = loginUser(int(username), password)
+            if result:
                 print("USERNAME:",username, "PASSWORD:",password)
-                return render_template("home.html", name=username)
+                return render_template("home.html", name=("Hi " + CurrentUser[0][2] + "!"))
             else:
                 return render_template("index.html", LOGIN_ERROR_MSG="Invalid username or password")
         else:

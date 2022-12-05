@@ -95,12 +95,13 @@ def loginUser(UCID, password):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"SELECT * FROM EndUser WHERE UCID={UCID} AND password='{password}'")
-    if len(cursor.fetchall()) == 1:
+    CurrentUser = cursor.fetchall()
+    if len(CurrentUser) == 1:
         cursor.close()
-        return True
+        return True, CurrentUser
     else:
         cursor.close()
-        return False
+        return False, None
 
 
 def add_new_profile(UCID, Password, Name, Email):
