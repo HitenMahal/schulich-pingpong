@@ -5,14 +5,28 @@
     </head>
     <body>
         <h1> Schulich Ping-Pong </h1>
+        <h3> You can rent for a maximum of 4 hours</h3>
         <form action="/newRental" method="POST">
-            <select name="item">
-                <option value="Paddle">Paddle + Ball</option>
-                <option value="2Paddle">2 Paddle + Ball</option>
-                <option value="dayRental">Day Rental (2 Paddles + 2 Balls)</option>
+            <select name="numberOfPaddles">
+                <option value="1Paddle">1 Paddle and 1 ball</option>
+                <option value="2Paddle">2 Paddle and 1 ball</option>
+                <option value="3Paddle">3 Paddle and 1 ball</option>
+                <option value="4Paddle">4 Paddle and 1 ball</option>
+            </select>
+            <select name="rentTime">
+                <option value="1hour">1 hour</option>
+                <option value="2hour">2 hour</option>
+                <option value="3hour">3 hour</option>
+                <option value="4hour">4 hour</option>
+            </select>
+            <select name="BName">
+                <option value="The_Crazy_Building">The Crazy Building</option>
+                <option value="The_Amazing_Building">The Amazing Building</option>
+                <option value="The_Engineering_Building">The Engineering Building</option>
             </select>
             <input type="submit" value="Rent out">
         </form>
+        <h1>{{rentalMsg}}</h1>
         <h1>----------------------------------------------------------------------------------</h1>
     </body>
 </html> 

@@ -33,7 +33,7 @@ def init_db():
     cursor.execute("CREATE TABLE LeaderBoard (LName	TEXT,EName TEXT,BName TEXT,PRIMARY KEY(LName, EName, BName),FOREIGN KEY(EName)	REFERENCES eventsHappining(EName),FOREIGN KEY(BName) REFERENCES Building(buildingName));")
     # Team
     cursor.execute("DROP TABLE IF EXISTS Team")
-    cursor.execute("CREATE TABLE Team(teamID INTEGER,LName TEXT,teamType TEXT,teamName	TEXT,PRIMARY KEY (teamID, LName),FOREIGN KEY (LName) REFERENCES LeaderBoard(LName));")
+    cursor.execute("CREATE TABLE Team(teamID INTEGER PRIMARY KEY,LName TEXT,teamType TEXT,teamName TEXT,FOREIGN KEY (LName) REFERENCES LeaderBoard(LName));")
     # UserIsInTeam
     cursor.execute("DROP TABLE IF EXISTS User_Is_In_Team")
     cursor.execute("CREATE TABLE User_Is_In_Team(UCID INTEGER,teamID INTEGER,PRIMARY KEY(UCID, teamID),FOREIGN KEY (UCID) REFERENCES Users (UCID),FOREIGN KEY (teamID) REFERENCES Team (teamID));")
@@ -45,7 +45,7 @@ def init_db():
     cursor.execute("CREATE TABLE Game_Player_Id (matchID INTEGER,PUCID INTEGER,PRIMARY KEY(matchID, PUCID),FOREIGN KEY(matchID)	REFERENCES gamePlayed(matchID),FOREIGN KEY(PUCID) REFERENCES Users(UCID));")
     # Team_Player_Id
     cursor.execute("DROP TABLE IF EXISTS Team_Player_Id")
-    cursor.execute("CREATE TABLE Team_Player_Id (teamID	INTEGER,PUCID INTEGER,PRIMARY KEY(teamID, PUCID),FOREIGN KEY(teamID) REFERENCES Team(teamID),FOREIGN KEY(PUCID) REFERENCES Users(UCID));")
+    cursor.execute("CREATE TABLE Team_Player_Id (teamID	INTEGER PRIMARY KEY, PUCID INTEGER,FOREIGN KEY(teamID) REFERENCES Team(teamID),FOREIGN KEY(PUCID) REFERENCES Users(UCID));")
     # Building_Tables
     cursor.execute("DROP TABLE IF EXISTS Building_Tables")
     cursor.execute("CREATE TABLE Building_Tables(BName TEXT,tableNumber INTEGER,PRIMARY KEY(BName, tableNumber),FOREIGN KEY(BName) REFERENCES building(buildingName));")
@@ -60,10 +60,10 @@ def init_db():
     cursor.execute("CREATE TABLE Booking (forTimeStamp TEXT,scheduleNumber INTEGER,UCID INTEGER,PRIMARY KEY(forTimeStamp, scheduleNumber, UCID),FOREIGN KEY(UCID) REFERENCES Users(UCID),FOREIGN KEY(scheduleNumber) REFERENCES schedules(scheduleNumber));")
     # Rental
     cursor.execute("DROP TABLE IF EXISTS Rental")
-    cursor.execute("CREATE TABLE Rental(UCID INTEGER,rentalID INTEGER,startTime INTEGER,returnTIME INTEGER,deposit INTEGER,PRIMARY KEY(UCID,rentalID),FOREIGN KEY(UCID) REFERENCES Users(UCID));")
+    cursor.execute("CREATE TABLE Rental(UCID INTEGER,rentalID INTEGER PRIMARY KEY,startTime TEXT,returnTime TEXT,deposit INTEGER,FOREIGN KEY(UCID) REFERENCES Users(UCID));")
     # Equipment
     cursor.execute("DROP TABLE IF EXISTS Equipment")
-    cursor.execute("CREATE TABLE equipment(EType TEXT,maxRentalTime INTEGER,rentalID INTEGER,BName TEXT,PRIMARY KEY(EType),FOREIGN KEY(rentalID) REFERENCES rental(rentalID),FOREIGN KEY(BName) REFERENCES building(buildingName));")
+    cursor.execute("CREATE TABLE Equipment(EType TEXT,maxRentalTime INTEGER,rentalID INTEGER,BName TEXT,PRIMARY KEY(EType),FOREIGN KEY(rentalID) REFERENCES rental(rentalID),FOREIGN KEY(BName) REFERENCES building(buildingName));")
     
     db.commit()
     cursor.close()
@@ -73,6 +73,11 @@ def initDefaultUsersAndAdmins():
     cursor = db.cursor()
     # Default Users
     cursor.execute("INSERT INTO EndUser VALUES ( 1, 'pass', 'John Doe', 'john.doe@ucalgary.ca', 'USER')")
+    cursor.execute("INSERT INTO Stats VALUES (1, 1, 10, 20, 30)")
+    cursor.execute("INSERT INTO Leaderboard VALUES ('crazy Time board', 'crazy Event', 'The Crazy Building')")
+    cursor.execute("INSERT INTO Building VALUES ('The Crazy Building', 'In a crazy Location', 'Crazy Studies')")
+    cursor.execute("INSERT INTO Building VALUES ('The Amazing Building', 'In a Amazing Location', 'Amazing Studies')")
+    cursor.execute("INSERT INTO Building VALUES ('The Engineering Building', 'In the best Location', 'Torture Studies')")
     print(cursor.rowcount, "INIT USER")
     cursor.execute("INSERT INTO EndUser VALUES ( 2, 'password', 'Hiten Mahalwar', 'hiten.mahalwar@ucalgary.ca', 'ADMIN')")
     print(cursor.rowcount, "INIT ADMIN")
@@ -143,7 +148,9 @@ def get_user_stats(UCID):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"SELECT * FROM STATS WHERE UCID = {UCID}")
+    x = cursor.fetchall()
     cursor.close()
+    return x
 
 def add_stats(UCID, MatchesWon, MatchesPlayed, HoursPlayed):
     db = connect_db()
@@ -167,17 +174,21 @@ def edit_stats(ucid):
     cursor.close()
 
 
-def new_team(team_ID, team_name, team_type):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"INSERT INTO Team VALUES ({int(team_ID)}, 'drop-in', '{team_type}', '{team_name}'")
-    db.commit()
-    if cursor.rowcount == 1:
-        cursor.close()
-        return True
-    else:
-        cursor.close()
-        return False
+def new_team(team_name, team_type):
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"INSERT INTO Team (LName, teamType, teamName) VALUES ('drop-in', '{team_type}', '{team_name}')")
+        db.commit()
+        msg = cursor.lastrowid
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, msg
+        else:
+            cursor.close()
+            return False, "Failed to add to DB"
+    except Exception as e:
+        return False, str(e)
 
 def delete_team(team_ID):
     db = connect_db()
@@ -221,7 +232,12 @@ def remove_team_member(ucid):
     cursor = db.cursor()
     cursor.execute(f"DELETE FROM TEAM WHERE UCID = {ucid}")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def get_all_teams_with_user(ucid):
     db = connect_db()
@@ -243,12 +259,22 @@ def delete_booking(time_slot):
     db.commit()
     cursor.close()
 
-def new_rental(ucid, rental_id, start_time, return_time, deposit):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"INSERT INTO RENTAL VALUES ({ucid}, {rental_id}, {start_time}, {return_time}, {deposit})")
-    db.commit()
-    cursor.close()
+def new_rental(ucid, start_time, return_time, deposit):
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"INSERT INTO Rental (UCID, startTime, returnTime, deposit) VALUES ({ucid}, '{start_time}', '{return_time}', {deposit})")
+        db.commit()
+        msg = cursor.lastrowid
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, msg
+        else:
+            cursor.close()
+            return False, "Rental was not succesfull, please try again"
+    except Exception as e:
+        return False, str(e)
+    
 
 def edit_rental(rental_id):
     db = connect_db()
@@ -302,16 +328,37 @@ def delete_schedule(table_num, schedule_num):
 def new_equipment(type, max_rental_time, building_name):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO EQUIPMENT VALUES ({type}, {max_rental_time}, {building_name})")
+    cursor.execute(f"INSERT INTO Equipment VALUES ({type}, {max_rental_time}, {building_name})")
     db.commit()
-    cursor.close()
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
 def delete_equipment(equipment_id):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"DELETE FROM EQUIPMENT WHERE equipment_id = {equipment_id}")
+    cursor.execute(f"DELETE FROM Equipment WHERE equipment_id = {equipment_id}")
     db.commit()
     cursor.close()
+    
+def update_equipment_rental(Etype, rentalID):
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"UPDATE Equipment SET rentalID = {rentalID} WHERE EType = {Etype} AND rentalID IS NULL")
+        db.commit()
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, None
+        else:
+            cursor.close()
+            return False, "No equipment of that type is currently available, please select a different rental"
+    except Exception as e:
+        return False, str(e)
+
 
 def add_player_ID(match_id, player_ucid):
     db = connect_db()

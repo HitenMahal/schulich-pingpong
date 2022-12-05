@@ -7,10 +7,8 @@
         <h1> Schulich Ping-Pong </h1>
         <h1> Team Submission</h1>
         <form action="/SUBMIT_TEAMS" method="POST">
-            
             <input type = "text" name = "team_name" placeholder = "Team Name">
             <input type = "text" name = "team_type" placeholder = "Team Type">
-            <input type = "text" name = "team_id" placeholder = "ID">
             <input type = "submit" value="Submit">
         </form>
         <h1> Team Deletation</h1>
@@ -19,6 +17,12 @@
             <input type = "text" name = "team_id" placeholder = "ID">
             <input type="submit" value="Delete">
         </form>
+        <h1> Edit Team</h1>
+        <form action="/editTeams" method="POST">
+            
+            <input type="submit" value="Edit Teams">
+        </form>
+        {{msg}}
         <h1>----------------------------------------------------------------------------------</h1>
     </body>
 </html> 

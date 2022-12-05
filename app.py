@@ -1,5 +1,6 @@
 import sqlite3
 from flask import Flask, session, render_template, request, g
+from datetime import datetime
 
 from SQLDriver import *
 
@@ -54,7 +55,11 @@ def register():
 @app.route('/stats', methods=['GET', 'POST'], endpoint='stats')
 def stats():
     if request.method == 'POST':
-        return render_template("stats.html")
+        stats = get_user_stats(1)
+        matchesWon = "matches Won: " + str(stats[0][2])
+        hoursPlayed = "hours Played: " + str(stats[0][3])
+        matchesPlayed = "matches Played: " + str(stats[0][4])
+        return render_template("stats.html", matchesWon = matchesWon, hoursPlayed = hoursPlayed, matchesPlayed = matchesPlayed)
     else:
         return render_template("home.html")
 
@@ -63,11 +68,13 @@ def SUBMIT_TEAMS():
     if request.method == 'POST':
         team_name = request.form['team_name']
         team_type = request.form['team_type']
-        team_id = request.form['team_id']
         # player_ucid = request.form['player_ucid']
-        if new_team(int(team_id), team_name, team_type):
+        success, team_id = new_team(team_name, team_type)
+        if success:
             print("TEAM ID: ", team_id, "TEAM NAME: ", team_name, "TEAM TYPE: ", team_type)
-            return render_template("teams.html", team_id = team_id, team_name = team_name, team_type = team_type)
+            return render_template("teams.html", msg="Team created successfully")
+        else:
+            return render_template("teams.html", msg=team_id)
     else:
         return render_template("home.html")
 
@@ -91,6 +98,23 @@ def add_member():
     else:
         return render_template("home.html")
 
+@app.route('/remove_member', methods=['GET', 'POST'], endpoint='remove_member')
+def remove_member():
+    if request.method == 'POST':
+        player_ucid = request.form['player_ucid']
+        if remove_team_member(player_ucid):
+            print("PLAYER UCID: ", player_ucid)
+            return render_template("teams.html", player_ucid = player_ucid)
+    else:
+        return render_template("home.html")
+
+@app.route('/editTeams', methods=['GET', 'POST'], endpoint='editTeams')
+def editTeams():
+    if request.method == 'POST':
+            return render_template("editTeams.html")
+    else:
+        return render_template("home.html")
+
 @app.route('/teams', methods=['GET', 'POST'], endpoint='teams')
 def teams():
     if request.method == 'POST':
@@ -104,6 +128,34 @@ def rent():
         return render_template("rent.html")
     else:
         return render_template("home.html")
+
+@app.route('/newRental', methods=['GET', 'POST'], endpoint='newRental')
+def newRental():
+    # userUCID = getUCID()
+    userUCID = 1
+    paddle = request.form['numberOfPaddles']
+    now = datetime.now()
+    current_hour = now.strftime("%H")
+    hour = int(current_hour)
+    current_minute = now.strftime("%M")
+    current_time = now.strftime("%H:%M")
+    rentTime = request.form['rentTime']
+    for i in range(int(rentTime[0])):
+        if (hour < 24):
+            hour += 1
+        else:
+            hour == 0
+    returnTime = str(hour) + ":" + current_minute
+    deposit = 5 * int(paddle[0])
+    EType = paddle[1:]
+    max_rental_time = rentTime[0]
+    buildingName = request.form['BName']
+    success, msg = new_rental(userUCID, current_time, returnTime, deposit)
+    if success:
+        if update_equipment_rental(EType, msg):
+            return render_template("rent.html",rentalMsg="Rental Successful, Please pickup your rental at the ESS Office at ENE 134A")
+    else:
+        return render_template("rent.html",rentalMsg=msg)
 
 @app.teardown_appcontext
 def close_connection(exception):
