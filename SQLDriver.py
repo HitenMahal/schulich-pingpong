@@ -24,10 +24,15 @@ def dbTest():
     return [str(x) for x in data]
 
 def loginUser(username, password):
-    if username=="admin" and password=="admin":
+    return True
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM ENDUSER WHERE name = '{username}' AND password = '{password}'")
+    if cursor.rowcount == 1:
         return True
     else:
         return False
+
 
 def add_new_profile(UCID, Username, Email, Type):
     db = connect_db()
