@@ -11,18 +11,19 @@
             <input type = "text" name = "team_type" placeholder = "Team Type">
             <input type = "submit" value="Submit">
         </form>
+        <h1>{{NEW_TEAM_MSG}}</h1>
         <h1> Team Deletation</h1>
         <form action="/Delete_Teams" method="POST">
 
             <input type = "text" name = "team_id" placeholder = "ID">
             <input type="submit" value="Delete">
         </form>
+        <h1>{{DEL_TEAM_MSG}}</h1>
         <h1> Edit Team</h1>
         <form action="/editTeams" method="POST">
             
             <input type="submit" value="Edit Teams">
         </form>
-        {{msg}}
         <h1>----------------------------------------------------------------------------------</h1>
     </body>
 </html> 

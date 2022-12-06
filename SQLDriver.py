@@ -34,9 +34,6 @@ def init_db():
     # Team
     cursor.execute("DROP TABLE IF EXISTS Team")
     cursor.execute("CREATE TABLE Team(teamID INTEGER PRIMARY KEY,LName TEXT,teamType TEXT,teamName TEXT,FOREIGN KEY (LName) REFERENCES LeaderBoard(LName));")
-    # UserIsInTeam
-    cursor.execute("DROP TABLE IF EXISTS User_Is_In_Team")
-    cursor.execute("CREATE TABLE User_Is_In_Team(UCID INTEGER,teamID INTEGER,PRIMARY KEY(UCID, teamID),FOREIGN KEY (UCID) REFERENCES Users (UCID),FOREIGN KEY (teamID) REFERENCES Team (teamID));")
     # Game
     cursor.execute("DROP TABLE IF EXISTS Game")
     cursor.execute("CREATE TABLE Game (LName TEXT,matchID INTEGER,score	INTEGER,matchDate TEXT,PRIMARY KEY(LName, matchID),FOREIGN KEY(Lname) REFERENCES LeaderBoard(LName));")
@@ -174,13 +171,14 @@ def edit_stats(ucid):
     cursor.close()
 
 
-def new_team(team_name, team_type):
+def new_team(team_name, team_type, ucid):
     try:
         db = connect_db()
         cursor = db.cursor()
         cursor.execute(f"INSERT INTO Team (LName, teamType, teamName) VALUES ('drop-in', '{team_type}', '{team_name}')")
-        db.commit()
         msg = cursor.lastrowid
+        cursor.execute(f"INSERT INTO Team_Player_Id VALUES ({msg}, {ucid})")
+        db.commit()
         if cursor.rowcount == 1:
             cursor.close()
             return True, msg
@@ -191,16 +189,20 @@ def new_team(team_name, team_type):
         return False, str(e)
 
 def delete_team(team_ID):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"DELETE FROM Team WHERE team_id = {int(team_ID)}")
-    db.commit()
-    if cursor.rowcount == 1:
-        cursor.close()
-        return True
-    else:
-        cursor.close()
-        return False
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM Team_Player_Id WHERE teamID = {team_ID}")
+        cursor.execute(f"DELETE FROM Team WHERE teamID = {team_ID}")
+        db.commit()
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, "Team Deleted Successfully"
+        else:
+            cursor.close()
+            return False, "Team Deletion Failed, Please Try Again"
+    except Exception as e:
+        return False, str(e)
 
 def edit_team(team_ID):
     db = connect_db()
@@ -215,10 +217,11 @@ def get_teamMember_stats(team_ID):
     cursor.execute(f"SELECT s.UCID, s.stat_distinguisher, s.matches_played, s.matches_won, s.hours_player FROM STATS as s NATURAL JOIN (SELECT UCID FROM USER_IN_TEAM WHERE team_id  = {team_ID})")
     cursor.close()
 
-def add_team_member(ucid):
+def add_team_member(ucid, currUcid):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO TEAM (UCID) VALUES (UCID = {ucid})")
+    cursor.execute(f"SELECT teamID FROM Team AS t, Team_Player_Id AS P WHERE ")
+    cursor.execute(f"INSERT INTO Team_Player_Id VALUES ()")
     db.commit()
     if cursor.rowcount == 1:
         cursor.close()
