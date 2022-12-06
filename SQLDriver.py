@@ -36,7 +36,7 @@ def init_db():
     cursor.execute("CREATE TABLE Team(teamID INTEGER PRIMARY KEY,LName TEXT,teamType TEXT,teamName TEXT,FOREIGN KEY (LName) REFERENCES LeaderBoard(LName));")
     # Game
     cursor.execute("DROP TABLE IF EXISTS Game")
-    cursor.execute("CREATE TABLE Game (LName TEXT,matchID INTEGER,score	INTEGER,matchDate TEXT,PRIMARY KEY(LName, matchID),FOREIGN KEY(Lname) REFERENCES LeaderBoard(LName));")
+    cursor.execute("CREATE TABLE Game (LName TEXT,matchID INTEGER,score	Text,matchDate TEXT,PRIMARY KEY(LName, matchID),FOREIGN KEY(Lname) REFERENCES LeaderBoard(LName));")
     # Game_Player_Id
     cursor.execute("DROP TABLE IF EXISTS Game_Player_Id")
     cursor.execute("CREATE TABLE Game_Player_Id (matchID INTEGER,PUCID INTEGER,PRIMARY KEY(matchID, PUCID),FOREIGN KEY(matchID)	REFERENCES gamePlayed(matchID),FOREIGN KEY(PUCID) REFERENCES Users(UCID));")
@@ -48,7 +48,7 @@ def init_db():
     cursor.execute("CREATE TABLE Building_Tables(BName TEXT,tableNumber INTEGER,PRIMARY KEY(BName, tableNumber),FOREIGN KEY(BName) REFERENCES building(buildingName));")
     # Schedule_Time_Slots
     cursor.execute("DROP TABLE IF EXISTS Schedule_Time_Slots")
-    cursor.execute("CREATE TABLE Schedule_Time_Slots(scheduleNumber INTEGER,timeSlot INTEGER,PRIMARY KEY(scheduleNumber, timeSlot));")
+    cursor.execute("CREATE TABLE Schedule_Time_Slots(timeSlot INTEGER, UCID INTEGER, tableID INTEGER, scheduleNumber INTEGER,PRIMARY KEY(scheduleNumber, timeSlot));")
     # Schedule
     cursor.execute("DROP TABLE IF EXISTS Schedule")
     cursor.execute("CREATE TABLE Schedule (tableNumber INTEGER,scheduleNumber INTEGER,PRIMARY KEY(tableNumber, scheduleNumber),FOREIGN KEY(tableNumber)	REFERENCES availableTables(tableNumber));")
@@ -71,6 +71,10 @@ def initDefaultUsersAndAdmins():
     # Default Users
     cursor.execute("INSERT INTO EndUser VALUES ( 1, 'pass', 'John Doe', 'john.doe@ucalgary.ca', 'USER')")
     cursor.execute("INSERT INTO Stats VALUES (1, 1, 10, 20, 30)")
+    cursor.execute("INSERT INTO Team VALUES (69, 'crazy Time board', 'crazy people', 'Pong Pros')")
+    cursor.execute("INSERT INTO User_Is_In_Team VALUES (1, 69)")
+    cursor.execute("INSERT INTO Game VALUES ('crazy Time board', 1234, 'Crazy people: 14      Sane people: 21', '2013,02,10')")
+    cursor.execute("INSERT INTO Game VALUES ('crazy Time board', 4321, 'Crazy people: 21      Sane people: 14', '2013,02,10')")
     cursor.execute("INSERT INTO Leaderboard VALUES ('crazy Time board', 'crazy Event', 'The Crazy Building')")
     cursor.execute("INSERT INTO Building VALUES ('The Crazy Building', 'In a crazy Location', 'Crazy Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Amazing Building', 'In a Amazing Location', 'Amazing Studies')")
@@ -246,9 +250,39 @@ def get_all_teams_with_user(ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"SELECT team_id FROM TEAM WHERE UCID = {ucid}")
-    cursor.close()
+    teams = cursor.fetchall()
+    if len(teams) == 1:
+        cursor.close()
+        return True, teams
+    else:
+        cursor.close()
+        return False, None
 
-def new_booking(schedule_num, ucid):
+def getUserTeamsID(ucid):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT teamID FROM User_Is_In_Team WHERE UCID = {ucid}")
+    teams = cursor.fetchall()
+    if len(teams) == 1:
+        cursor.close()
+        return True, teams
+    else:
+        cursor.close()
+        return False, None
+
+def getUserTeamsLeaderBoard(userTeamID):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT LName FROM Team WHERE teamID = {userTeamID}")
+    teams = cursor.fetchall()
+    if len(teams) == 1:
+        cursor.close()
+        return True, teams
+    else:
+        cursor.close()
+        return False, None
+
+def new_schedule(schedule_num, ucid):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"INSERT INTO BOOKING (SSchedule#, UCID) VALUES ( SSchedule# = {schedule_num}, UCID = {ucid})")
@@ -293,6 +327,14 @@ def new_match(match_id, ucid, score, date):
     db.commit()
     cursor.close()
 
+def getMatches(leaderboardName):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM Game WHERE LNAME = '{leaderboardName}'")
+    matches = cursor.fetchall()
+    cursor.close()
+    return matches
+
 def cancel_match(match_id):
     db = connect_db()
     cursor = db.cursor()
@@ -306,6 +348,15 @@ def new_leaderboard(name, event_name, building_name):
     cursor.execute(f"INSERT INTO LEADERBOARD (Name, E_name, B_name) VALUES (Name = {name}, E_name = {event_name}, B_name = {building_name})")
     db.commit()
     cursor.close()
+
+def getLeaderboards(LeaderboardName):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM LEADERBOARD WHERE LName = '{LeaderboardName}'")
+    db.commit()
+    leaderboards = cursor.fetchall()
+    cursor.close()
+    return leaderboards
 
 def delete_leaderboard(name):
     db = connect_db()
@@ -405,19 +456,24 @@ def delete_building(name):
     db.commit()
     cursor.close()   
 
-def add_time_slot(schedule_num, time_slot): 
+def add_time_slot(time_slot, ucid, table_ID, schedule_ID): 
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO SCHEDULE_TIME_SLOTS VALUES ({schedule_num}, {time_slot})")
+    cursor.execute(f"INSERT INTO SCHEDULE_TIME_SLOTS VALUES ({int(time_slot)}, {int(ucid)}, {int(table_ID)}, {int(schedule_ID)})")
     db.commit()
-    cursor.close()   
+    if cursor.rowcount == 1:
+        cursor.close()
+        return True
+    else:
+        cursor.close()
+        return False
 
-def remove_time_slot(schedule_num, time_slot):
+def remove_time_slot(time_slot, ucid, table_ID, schedule_ID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE schedule_num = {schedule_num}, time_slot = {time_slot}")
+    cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE timeSlot = {int(time_slot)} AND UCID = {int(ucid)} AND tableID = {int(table_ID)} AND scheduleNumber = {int(schedule_ID)}")
     db.commit()
-    cursor.close()  
+    cursor.close()
 
 def add_table(building_name, table_num):
     db = connect_db()

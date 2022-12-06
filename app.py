@@ -24,6 +24,7 @@ def login():
     global CurrentUser
     try:
         if request.method == 'POST':
+            global CurrentUser
             username = request.form['username']
             password = request.form['password']
             result, CurrentUser = loginUser(int(username), password)
@@ -157,6 +158,62 @@ def newRental():
             return render_template("rent.html",rentalMsg="Rental Successful, Please pickup your rental at the ESS Office at ENE 134A")
     else:
         return render_template("rent.html",rentalMsg=msg)
+
+<<<<<<< HEAD
+@app.route('/booking', methods=['GET', 'POST'], endpoint='booking')
+def booking():
+    if request.method == 'POST':
+        return render_template("booking.html")
+    else:
+        return render_template("home.html")
+
+@app.route('/book_spot', methods=['GET', 'POST'], endpoint='book_spot')
+def book_spot():
+    if request.method == 'POST':
+        time_slot = request.form['time_slot']
+        table_ID = request.form['table_ID']
+        ucid = request.form['ucid']
+        schedule_ID = request.form['schedule_ID']
+        success = add_time_slot(time_slot, ucid, table_ID, schedule_ID)
+        if success:
+            print("Time Slot: ", time_slot, "UCID: ", ucid, "Table ID: ", table_ID)
+        return render_template("booking.html", msg = "Booked!")
+    else:
+        return render_template("home.html")
+
+@app.route('/delete_spot', methods=['GET', 'POST'], endpoint='delete_spot')
+def delete_spot():
+    if request.method == 'POST':
+        time_slot = request.form['time_slot']
+        table_ID = request.form['table_ID']
+        ucid = request.form['ucid']
+        schedule_ID = request.form['schedule_ID']
+        success = remove_time_slot(time_slot, ucid, table_ID, schedule_ID)
+        if success:
+            print("Time Slot: ", time_slot, "UCID: ", ucid, "Table ID: ", table_ID, "Schedule ID: " , schedule_ID)
+        return render_template("booking.html", msg1 = "Booking Deleted")
+    else:
+        return render_template("home.html")
+=======
+@app.route('/leaderBoards', methods=['GET', 'POST'], endpoint='leaderBoards')
+def leaderBoards():
+    if request.method == 'POST':
+        counter = 0
+        getAllTeamInfoResult, currentUserTeamsID = getUserTeamsID(CurrentUser[0][0])
+        if getAllTeamInfoResult:
+            getUserLeaderboardsResult, userLeaderboards = getUserTeamsLeaderBoard(currentUserTeamsID[0][0])
+            if getUserLeaderboardsResult:
+                matches = getMatches(userLeaderboards[0][0])
+                displayMatch = ''
+                displayScoreAndTime = ''
+                for match in matches:
+                    counter += 1
+                    displayMatch = match[0]
+                    displayScoreAndTime += match[2] + " " + match[3] + " "
+                return render_template("leaderboards.html", displayMatch = displayMatch, displayScoreAndTime = displayScoreAndTime, matchNumber = counter)
+    else:
+        return render_template("teams.html")
+>>>>>>> 384ef8e16499dbe7f6a209384a64ef607ac72e19
 
 @app.teardown_appcontext
 def close_connection(exception):
