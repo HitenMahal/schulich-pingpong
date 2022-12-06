@@ -161,19 +161,25 @@ def newRental():
 @app.route('/leaderBoards', methods=['GET', 'POST'], endpoint='leaderBoards')
 def leaderBoards():
     if request.method == 'POST':
-        counter = 0
+        totalMatches = []
         getAllTeamInfoResult, currentUserTeamsID = getUserTeamsID(CurrentUser[0][0])
         if getAllTeamInfoResult:
-            getUserLeaderboardsResult, userLeaderboards = getUserTeamsLeaderBoard(currentUserTeamsID[0][0])
-            if getUserLeaderboardsResult:
-                matches = getMatches(userLeaderboards[0][0])
-                displayMatch = ''
-                displayScoreAndTime = ''
-                for match in matches:
-                    counter += 1
-                    displayMatch = match[0]
-                    displayScoreAndTime += match[2] + " " + match[3] + " "
-                return render_template("leaderboards.html", displayMatch = displayMatch, displayScoreAndTime = displayScoreAndTime, matchNumber = counter)
+            displayLeaderboardName = ''
+            displayScoreAndTime = "*"
+            for x in currentUserTeamsID:
+                getUserLeaderboardsResult, userLeaderboards = getUserTeamsLeaderBoard(x[0])
+                if getUserLeaderboardsResult:
+                    for x in userLeaderboards:
+                        matches = getMatches(x[0])
+                        leaderBoardMatches = 0
+                        displayLeaderboardName += matches[len(totalMatches)][0] + "!"
+                        for match in matches:
+                            leaderBoardMatches += 1
+                            displayScoreAndTime += "Scores: " + match[2] + "    Time match was played: " + match[3] + "*"
+                        totalMatches.append(leaderBoardMatches)
+                        displayScoreAndTime += "!"
+            return render_template("leaderboards.html", displayLeaderboardName = displayLeaderboardName, displayScoreAndTime = displayScoreAndTime, 
+            totalMatches = totalMatches)
     else:
         return render_template("teams.html")
 

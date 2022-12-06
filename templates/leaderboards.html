@@ -4,13 +4,57 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <title>Leaderboards</title>
 </head>
 <body>
     <h1>Leaderboards you are in</h1>
-    <h2>Leaderboard: {{displayMatch}}</h2>
     <h1>----------------------------------------------------------------------------------</h1>
-    <h3>{{matchNumber}} Matchs <br>-------------</h3>
-    <h3>{{displayScoreAndTime}}</h3>
+    <textarea id="display" style="width:1000px;"></textarea>
+    <script>
+        var display = "";
+        var x = 1;
+        var j = 0;
+        var leaderboardCounter = 0;
+        var scoreAndTimeDisplay = "{{displayScoreAndTime}}";
+        var leaderboardName = "{{displayLeaderboardName}}"
+        for (i = 0; i< scoreAndTimeDisplay.length; i++) {
+            if (scoreAndTimeDisplay[i] != "*") {
+                if (scoreAndTimeDisplay[i] == "!") {
+                    if (leaderboardName.length > j)
+                        display += "\n";
+                    while (leaderboardName[j] != "!" && leaderboardName.length > j) {
+                        display += leaderboardName[j];
+                        j++;
+                    }
+                    if (leaderboardName.length > j) {
+                        j++;
+                        display += ":";
+                        display += "\n";
+                        leaderboardCounter++;
+                        x += 1;
+                    }
+                } else {
+                    display += scoreAndTimeDisplay[i];
+                }
+            } else {
+                if (i - 1 == -1){
+                    while (leaderboardName[j] != "!") {
+                        display += leaderboardName[j];
+                        j++;
+                    }
+                    j++;
+                    display += ":";
+                    display += "\n";
+                    leaderboardCounter++;
+                } else if (scoreAndTimeDisplay.length - 2 != i) {
+                    display += "\n";
+                }
+                x += 1;
+            }
+        }
+        $("#display").height((15 * x));
+        $("#display").val(display);        
+    </script>
 </body>
 </html>

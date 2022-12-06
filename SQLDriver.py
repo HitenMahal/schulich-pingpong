@@ -76,9 +76,14 @@ def initDefaultUsersAndAdmins():
     cursor.execute("INSERT INTO Stats VALUES (1, 1, 10, 20, 30)")
     cursor.execute("INSERT INTO Team VALUES (69, 'crazy Time board', 'crazy people', 'Pong Pros')")
     cursor.execute("INSERT INTO User_Is_In_Team VALUES (1, 69)")
+    cursor.execute("INSERT INTO Team VALUES (666, 'Saine Time board', 'Saine people', 'Ping Pong Pros')")
+    cursor.execute("INSERT INTO User_Is_In_Team VALUES (1, 666)")
     cursor.execute("INSERT INTO Game VALUES ('crazy Time board', 1234, 'Crazy people: 14      Sane people: 21', '2013,02,10')")
     cursor.execute("INSERT INTO Game VALUES ('crazy Time board', 4321, 'Crazy people: 21      Sane people: 14', '2013,02,10')")
+    cursor.execute("INSERT INTO Game VALUES ('Saine Time board', 1234, 'Crazy people: 666      Sane people: 21', '2013,02,10')")
+    cursor.execute("INSERT INTO Game VALUES ('Saine Time board', 4321, 'Crazy people: 69      Sane people: 14', '2013,02,10')")
     cursor.execute("INSERT INTO Leaderboard VALUES ('crazy Time board', 'crazy Event', 'The Crazy Building')")
+    cursor.execute("INSERT INTO Leaderboard VALUES ('Saine Time board', 'Saine Event', 'The Amazing Building')")
     cursor.execute("INSERT INTO Building VALUES ('The Crazy Building', 'In a crazy Location', 'Crazy Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Amazing Building', 'In a Amazing Location', 'Amazing Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Engineering Building', 'In the best Location', 'Torture Studies')")
@@ -260,7 +265,7 @@ def getUserTeamsID(ucid):
     cursor = db.cursor()
     cursor.execute(f"SELECT teamID FROM User_Is_In_Team WHERE UCID = {ucid}")
     teams = cursor.fetchall()
-    if len(teams) == 1:
+    if len(teams) > 0:
         cursor.close()
         return True, teams
     else:
