@@ -417,14 +417,9 @@ def add_time_slot(time_slot, ucid, table_ID, schedule_ID):
 def remove_time_slot(time_slot, ucid, table_ID, schedule_ID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE time_slot = {int(time_slot)}, UCID = {int(ucid)}, ")
+    cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE timeSlot = {int(time_slot)} AND UCID = {int(ucid)} AND tableID = {int(table_ID)} AND scheduleNumber = {int(schedule_ID)}")
     db.commit()
-    if cursor.rowcount == 1:
-        cursor.close()
-        return True
-    else:
-        cursor.close()
-        return False
+    cursor.close()
 
 def add_table(building_name, table_num):
     db = connect_db()

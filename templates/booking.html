@@ -10,13 +10,18 @@
             <input type = "text" name = "table_ID" placeholder = "Table ID">
             <input type = "text" name = "ucid" placeholder = "UCID">
             <input type = "text" name = "schedule_ID" placeholder = "Schedule ID">
-            <input type="submit" value="Booking">
+            <input type="submit" value="Make Booking">
         </form>
         {{msg}}
-        <h1> Booking </h1>
+        <h1> Deletion </h1>
         <form action="/delete_spot" method="POST">
-            <input type="submit" value="Rent">
+            <input type = "text" name = "time_slot" placeholder = "Time Slot (24 hour time)">
+            <input type = "text" name = "table_ID" placeholder = "Table ID">
+            <input type = "text" name = "ucid" placeholder = "UCID">
+            <input type = "text" name = "schedule_ID" placeholder = "Schedule ID">
+            <input type="submit" value="Delete Booking">
         </form>
+        {{msg1}}
         <h1>----------------------------------------------------------------------------------</h1>
     </body>
 </html> 
