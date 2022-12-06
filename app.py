@@ -159,7 +159,6 @@ def newRental():
     else:
         return render_template("rent.html",rentalMsg=msg)
 
-<<<<<<< HEAD
 @app.route('/booking', methods=['GET', 'POST'], endpoint='booking')
 def booking():
     if request.method == 'POST':
@@ -194,7 +193,6 @@ def delete_spot():
         return render_template("booking.html", msg1 = "Booking Deleted")
     else:
         return render_template("home.html")
-=======
 @app.route('/leaderBoards', methods=['GET', 'POST'], endpoint='leaderBoards')
 def leaderBoards():
     if request.method == 'POST':
@@ -213,7 +211,6 @@ def leaderBoards():
                 return render_template("leaderboards.html", displayMatch = displayMatch, displayScoreAndTime = displayScoreAndTime, matchNumber = counter)
     else:
         return render_template("teams.html")
->>>>>>> 384ef8e16499dbe7f6a209384a64ef607ac72e19
 
 @app.teardown_appcontext
 def close_connection(exception):
