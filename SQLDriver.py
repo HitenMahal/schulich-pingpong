@@ -176,7 +176,7 @@ def get_all_teams_with_user(ucid):
 def getUserTeamsID(ucid):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"SELECT teamID FROM User_Is_In_Team WHERE UCID = {ucid}")
+    cursor.execute(f"SELECT teamID FROM Team_Player_Id WHERE PUCID = {ucid}")
     teams = cursor.fetchall()
     if len(teams) > 0:
         cursor.close()
