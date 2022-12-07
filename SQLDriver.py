@@ -188,7 +188,7 @@ def getUserTeamsID(ucid):
 def getUserTeamsLeaderBoard(userTeamID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"SELECT LName FROM Team WHERE teamID = {userTeamID}")
+    cursor.execute(f"SELECT * FROM Team WHERE teamID = {userTeamID}")
     teams = cursor.fetchall()
     if len(teams) == 1:
         cursor.close()
@@ -272,6 +272,19 @@ def getLeaderboards(LeaderboardName):
     leaderboards = cursor.fetchall()
     cursor.close()
     return leaderboards
+
+def getAllLeaderboards():
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM LEADERBOARD")
+    db.commit()
+    leaderboards = cursor.fetchall()
+    if cursor.rowcount > 0 :
+        cursor.close()
+        return True, leaderboards
+    else:
+        cursor.close()
+        return False, None
 
 def delete_leaderboard(name):
     db = connect_db()

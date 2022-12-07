@@ -210,18 +210,37 @@ def leaderBoards():
                 print(userLeaderboards)
                 if getUserLeaderboardsResult:
                     for x in userLeaderboards:
-                        matches = getMatches(x[0])
+                        matches = getMatches(x[1])
                         leaderBoardMatches = 0
                         displayLeaderboardName += matches[len(totalMatches)][0] + "!"
                         for match in matches:
                             leaderBoardMatches += 1
-                            displayScoreAndTime += "Scores: " + match[2] + "    Time match was played: " + match[3] + "*"
+                            displayScoreAndTime += "Scores for the game are: " + str(match[2]) + " for " + str(x[3]) + " and " + str(match[3]) + " for the enemy team. Time the match was played: " + match[4] + "*"
                         totalMatches.append(leaderBoardMatches)
                         displayScoreAndTime += "!"
             return render_template("leaderboards.html", displayLeaderboardName = displayLeaderboardName, displayScoreAndTime = displayScoreAndTime, 
             totalMatches = totalMatches)
     else:
         return render_template("teams.html")
+
+@app.route('/addLeaderboard', methods=['GET', 'POST'], endpoint='addLeaderboard')
+def addLeaderboard():
+    if request.method == 'POST':
+        existingLeaderboards = getAllLeaderboards()
+        newLeaderboard = request.form['LName']
+        for x in existingLeaderboards:
+            if newLeaderboard == x[0]:
+                return render_template("adminDashboard.html", errorMessage = "Leader board name already exists")
+        return render_template("adminDashboard.html")
+    else:
+        return render_template("adminDashboard.html")
+
+@app.route('/addGamesToLeaderboard', methods=['GET', 'POST'], endpoint='addGamesToLeaderboard')
+def addGamesToLeaderboard():
+    if request.method == 'POST':
+        return render_template("adminDashboard.html")
+    else:
+        return render_template("adminDashboard.html")
 
 @app.teardown_appcontext
 def close_connection(exception):
