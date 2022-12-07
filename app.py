@@ -7,8 +7,8 @@ from SQLDriver import *
 app = Flask(__name__)
 
 # GLOBAL STATIC
-CurrentUser = None
-
+CurrentUser = None  #UCID, password, name, email, type
+CurrentTeam = None
 
 # END GLOBAL STATIC
 
@@ -21,12 +21,13 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
+    global CurrentUser
     try:
         if request.method == 'POST':
-            global CurrentUser
             username = request.form['UCID']
             password = request.form['password']
             result, CurrentUser = loginUser(int(username), password)
+            print(CurrentUser)
             if result:
                 print("UCID:",username, "PASSWORD:",password)
                 return render_template("home.html", name=("Hi " + CurrentUser[0][2] + "!"))
@@ -66,16 +67,18 @@ def stats():
 
 @app.route('/SUBMIT_TEAMS', methods=['GET', 'POST'], endpoint='SUBMIT_TEAMS')
 def SUBMIT_TEAMS():
+    global CurrentTeam
     if request.method == 'POST':
         team_name = request.form['team_name']
         team_type = request.form['team_type']
+        CurrentTeam = team_name
         # player_ucid = request.form['player_ucid']
-        success, team_id = new_team(team_name, team_type)
+        success, team_id = new_team(team_name, team_type, CurrentUser[0][0])
         if success:
             print("TEAM ID: ", team_id, "TEAM NAME: ", team_name, "TEAM TYPE: ", team_type)
-            return render_template("teams.html", msg="Team created successfully")
+            return render_template("teams.html", NEW_TEAM_MSG="Team created successfully")
         else:
-            return render_template("teams.html", msg=team_id)
+            return render_template("teams.html", NEW_TEAM_MSG=team_id)
     else:
         return render_template("home.html")
 
@@ -85,27 +88,35 @@ def Delete_Teams():
         team_id = request.form['team_id']
         if delete_team(int(team_id)):
             print("TEAM ID: ", team_id)
-            return render_template("teams.html", team_id = team_id)
+            return render_template("teams.html", DEL_TEAM_MSG = "Deleted team successfully")
+        else:
+            return render_template("teams.html", DEL_TEAM_MSG = "Team deletion failed")
     else:
         return render_template("home.html")
 
 @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
 def add_member():
     if request.method == 'POST':
-        player_ucid = request.form['player_ucid']
-        if add_team_member(player_ucid):
+        player_ucid = request.form['player_id']
+        success, msg = add_team_member(player_ucid, CurrentUser[0][0])
+        if success:
             print("PLAYER UCID: ", player_ucid)
-            return render_template("teams.html", player_ucid = player_ucid)
+            return render_template("editTeams.html", ADD_MEMBER_MSG=msg)
+        else:
+            return render_template("editTeams.html", ADD_MEMBER_MSG=msg)
     else:
         return render_template("home.html")
 
 @app.route('/remove_member', methods=['GET', 'POST'], endpoint='remove_member')
 def remove_member():
     if request.method == 'POST':
-        player_ucid = request.form['player_ucid']
-        if remove_team_member(player_ucid):
+        player_ucid = request.form['player_id']
+        success, msg = remove_team_member(player_ucid)
+        if success:
             print("PLAYER UCID: ", player_ucid)
-            return render_template("teams.html", player_ucid = player_ucid)
+            return render_template("editTeams.html", DELETE_MEMBER_MSG=msg)
+        else:
+            return render_template("editTeams.html", DELETE_MEMBER_MSG=msg)
     else:
         return render_template("home.html")
 
@@ -157,6 +168,15 @@ def newRental():
             return render_template("rent.html",rentalMsg="Rental Successful, Please pickup your rental at the ESS Office at ENE 134A")
     else:
         return render_template("rent.html",rentalMsg=msg)
+
+@app.route('/cancelRental', methods=['GET', 'POST'], endpoint='cancelRental')
+def cancelRental():
+    if request.method == 'POST':
+        success, msg = cancel_rental(CurrentUser[0][0])
+        if success:
+            return render_template("rent.html", rentalMsg=msg)
+        else:
+            return render_template("rent.html", rentalMsg=msg)
 
 @app.route('/booking', methods=['GET', 'POST'], endpoint='booking')
 def booking():

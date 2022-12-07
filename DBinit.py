@@ -116,8 +116,9 @@ def init_db():
     cursor.execute("DROP TABLE IF EXISTS Team_Player_Id")
     cursor.execute("""
     CREATE TABLE Team_Player_Id (
-        teamID INTEGER PRIMARY KEY, 
+        teamID INTEGER, 
         PUCID INTEGER,
+        PRIMARY KEY(teamID, PUCID),
         FOREIGN KEY(teamID) REFERENCES Team(teamID),
         FOREIGN KEY(PUCID) REFERENCES EndUser(UCID)
     );""")

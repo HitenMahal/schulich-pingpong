@@ -137,29 +137,36 @@ def get_teamMember_stats(team_ID):
     cursor.close()
 
 def add_team_member(ucid, currUcid):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"SELECT teamID FROM Team AS t, Team_Player_Id AS P WHERE ")
-    cursor.execute(f"INSERT INTO Team_Player_Id VALUES ()")
-    db.commit()
-    if cursor.rowcount == 1:
-        cursor.close()
-        return True
-    else:
-        cursor.close()
-        return False
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"SELECT teamID FROM Team_Player_Id WHERE PUCID={currUcid}")
+        teamID = cursor.fetchone()[0]
+        cursor.execute(f"INSERT INTO Team_Player_Id VALUES ({teamID}, {ucid})")
+        db.commit()
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, "Successfully Added Team Member"
+        else:
+            cursor.close()
+            return False, "Failed to add Team Member"
+    except Exception as e:
+        return False, str(e)
 
 def remove_team_member(ucid):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"DELETE FROM TEAM WHERE UCID = {ucid}")
-    db.commit()
-    if cursor.rowcount == 1:
-        cursor.close()
-        return True
-    else:
-        cursor.close()
-        return False
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM Team_Player_Id WHERE PUCID = {ucid}")
+        db.commit()
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, "Successfully Removed Team Member"
+        else:
+            cursor.close()
+            return False, "Failed to Remove Team Member"
+    except Exception as e:
+        return False, str(e)
 
 def get_all_teams_with_user(ucid):
     db = connect_db()
@@ -227,6 +234,20 @@ def new_rental(ucid, start_time, return_time, deposit):
     except Exception as e:
         return False, str(e)
     
+def cancel_rental(ucid):
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM Rental WHERE UCID = {ucid}")
+        db.commit()
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, "Rental Cancelled"
+        else:
+            cursor.close()
+            return False, "Rental was not cancelled, please try again"
+    except Exception as e:
+        return False, str(e)
 
 def edit_rental(rental_id):
     db = connect_db()
