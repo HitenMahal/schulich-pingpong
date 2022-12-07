@@ -2,20 +2,26 @@
 <html>
     <head>
         <title>Schulich Ping-Pong</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
     </head>
     <body>
-        <h1> Add new team members </h1>
-        <form action="/add_member" method="POST">
-            <input type = "text" name = "player_id" placeholder = "Player ID">
-            <input type="submit" value="Add">
-        </form>
-        <h1>{{ADD_MEMBER_MSG}}</h1>
-        <h1> Remove team members </h1>
-        <form action="/remove_member" method="POST">
-            <input type = "text" name = "player_id" placeholder = "Player ID">
-            <input type="submit" value="Remove">
-        </form>
-        <h1>{{REMOVE_MEMBER_MSG}}</h1>
-        <h1>----------------------------------------------------------------------------------</h1>
+        <div class="container">
+            <h1> Add new team members </h1>
+            <form action="/add_member" method="POST">
+                <input class="formInput" type = "text" name = "player_id" placeholder = "Player ID" required>
+                <input class="buttonsmall" type="submit" value="Add">
+            </form>
+            <div class="msg">
+                {{ADD_MEMBER_MSG}}
+            </div>
+            <h1> Remove team members </h1>
+            <form action="/remove_member" method="POST">
+                <input class="formInput" type = "text" name = "player_id" placeholder = "Player ID" required>
+                <input class="buttonsmall" type="submit" value="Remove">
+            </form>
+            <div class="msg">
+                {{REMOVE_MEMBER_MSG}}
+            </div>
+        </div>
     </body>
 </html> 

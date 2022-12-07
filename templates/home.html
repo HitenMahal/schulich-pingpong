@@ -2,22 +2,50 @@
 <html>
     <head>
         <title>Schulich Ping-Pong</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
     </head>
     <body>
-        <h1> Schulich Ping-Pong </h1>
-        <h1>{{name}}</h1>
-        <form action="/stats" method="POST">
-            <input type="submit" value="See Stats">
-        </form>
-        <form action="/teams" method="POST">
-            <input type="submit" value="Teams">
-        </form>
-        <form action="/rent" method="POST">
-            <input type="submit" value="Rent">
-        </form>
-        <form action="/booking" method="POST">
-            <input type="submit" value="Booking">
-        </form>
-        <h1>----------------------------------------------------------------------------------</h1>
+        <div class="container">
+            <div class="greeting">
+                {{name}}
+            </h1>
+            <div class="buttonOptions">
+                <form action="/stats" method="POST">
+                    <input class="button" type="submit" value="Stats">
+                </form>
+                <form action="/teams" method="POST">
+                    <input class="button" type="submit" value="Teams">
+                </form>
+                <form action="/rent" method="POST">
+                    <input class="button" type="submit" value="Rent">
+                </form>
+                <form action="/booking" method="POST">
+                    <input class="button" type="submit" value="Booking">
+                </form>
+            </div>
+            <div class="upcomingTitle">
+                Upcoming Events
+            </div>
+            <ul class="card-wrapper">
+                <li class="upcomingCard">
+                    <div class="imgContainer">
+                        <img  id="upcomingImg" src="../static/img/tabletennis.jpg">
+                    </div>
+                    <div class="upcomingInfo">
+                        <p>Drop-In</p>
+                        <p>Monday-Friday 12:00-14:00</p>
+                    </div>
+                </li>
+                <li class="upcomingCard">
+                    <div class="imgContainer">
+                        <img  id="upcomingImg" src="../static/img/paddle.png">
+                    </div>                    
+                    <div class="upcomingInfo">
+                        <p>Balls of Fury</p>
+                        <p>February 25th Engg Lounge</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </body>
 </html> 
