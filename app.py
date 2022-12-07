@@ -7,7 +7,7 @@ from SQLDriver import *
 app = Flask(__name__)
 
 # GLOBAL STATIC
-CurrentUser = None  # [(1, 'pass', 'John Doe', 'john.doe@ucalgary.ca', 'USER')]
+CurrentUser = None
 
 
 # END GLOBAL STATIC
@@ -21,7 +21,6 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
-    global CurrentUser
     try:
         if request.method == 'POST':
             global CurrentUser
@@ -71,12 +70,12 @@ def SUBMIT_TEAMS():
         team_name = request.form['team_name']
         team_type = request.form['team_type']
         # player_ucid = request.form['player_ucid']
-        success, team_id = new_team(team_name, team_type, CurrentUser[0][0])
+        success, team_id = new_team(team_name, team_type)
         if success:
             print("TEAM ID: ", team_id, "TEAM NAME: ", team_name, "TEAM TYPE: ", team_type)
-            return render_template("teams.html", NEW_TEAM_MSG="Team created successfully")
+            return render_template("teams.html", msg="Team created successfully")
         else:
-            return render_template("teams.html", NEW_TEAM_MSG=team_id)
+            return render_template("teams.html", msg=team_id)
     else:
         return render_template("home.html")
 
@@ -86,7 +85,7 @@ def Delete_Teams():
         team_id = request.form['team_id']
         if delete_team(int(team_id)):
             print("TEAM ID: ", team_id)
-            return render_template("teams.html", DEL_TEAM_MSG="DELTED")
+            return render_template("teams.html", team_id = team_id)
     else:
         return render_template("home.html")
 
@@ -94,7 +93,7 @@ def Delete_Teams():
 def add_member():
     if request.method == 'POST':
         player_ucid = request.form['player_ucid']
-        if add_team_member(player_ucid, CurrentUser[0][0]):
+        if add_team_member(player_ucid):
             print("PLAYER UCID: ", player_ucid)
             return render_template("teams.html", player_ucid = player_ucid)
     else:
@@ -203,6 +202,7 @@ def leaderBoards():
             displayScoreAndTime = "*"
             for x in currentUserTeamsID:
                 getUserLeaderboardsResult, userLeaderboards = getUserTeamsLeaderBoard(x[0])
+                print(userLeaderboards)
                 if getUserLeaderboardsResult:
                     for x in userLeaderboards:
                         matches = getMatches(x[0])

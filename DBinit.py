@@ -198,7 +198,7 @@ def initDefaultUsersAndAdmins():
     cursor.execute("INSERT INTO Team_Player_Id VALUES (1, 1)")
     cursor.execute("INSERT INTO Game VALUES ('Engineering Drop-In', 1234, 'Crazy people: 14      Sane people: 21', '2013,02,10')")
     cursor.execute("INSERT INTO Game VALUES ('Engineering Drop-In', 4321, 'Crazy people: 21      Sane people: 14', '2013,02,10')")
-    cursor.execute("INSERT INTO Leaderboard VALUES ('crazy Time board', 'crazy Event', 'The Crazy Building')")
+    cursor.execute("INSERT INTO Leaderboard VALUES ('Engineering Drop-In', 'crazy Event', 'The Crazy Building')")
     cursor.execute("INSERT INTO Building VALUES ('The Crazy Building', 'In a crazy Location', 'Crazy Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Amazing Building', 'In a Amazing Location', 'Amazing Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Engineering Building', 'In the best Location', 'Torture Studies')")
