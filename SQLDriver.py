@@ -178,7 +178,7 @@ def getUserTeamsID(ucid):
     cursor = db.cursor()
     cursor.execute(f"SELECT teamID FROM User_Is_In_Team WHERE UCID = {ucid}")
     teams = cursor.fetchall()
-    if len(teams) == 1:
+    if len(teams) > 0:
         cursor.close()
         return True, teams
     else:
