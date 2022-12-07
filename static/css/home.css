@@ -1,0 +1,100 @@
+
+.container {
+    overflow: hidden;
+    width: 90vw;
+    height: 90vh;
+    background: #fff;
+    padding: 30px;
+    border-radius: 50px;
+    box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+}
+
+.greeting {
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.button {
+    width: 20vw;
+    height: 7vh;
+    background: linear-gradient(#4ac7dd, #3088a3);
+    border-radius: 10px;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.buttonsmall {
+    width: 10vw;
+    height: 5vh;
+    background: linear-gradient(#afecf7, #83d8f1);
+    border-radius: 10px;
+    color: #000;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.formInput {
+    height: 100%;
+    width: 25%;
+    outline: none;
+    padding-left: 15px;
+    border-radius: 5px;
+    border: 1px solid lightgrey;
+    border-bottom-width: 2px;
+    font-size: 17px;
+    margin: 0.2rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.buttonOptions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.upcomingTitle {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-top: 10vh;
+}
+
+.card-wrapper {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+}
+
+.upcomingCard {
+    width: 250px;
+    height: 250px;
+    border-radius: 15px;
+    box-shadow: 0.05rem 0.1rem 0.3rem -0.03rem rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    margin: 3vh;
+    padding-bottom: 3rem;
+}
+
+.imgContainer {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.upcomingInfo  {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 8px;
+}
+  
+#upcomingImg {
+    object-fit: cover;
+    max-width: 100%;
+    border-radius: 15px;
+}

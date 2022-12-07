@@ -24,14 +24,14 @@ def login():
     try:
         if request.method == 'POST':
             global CurrentUser
-            username = request.form['username']
+            username = request.form['UCID']
             password = request.form['password']
             result, CurrentUser = loginUser(int(username), password)
             if result:
-                print("USERNAME:",username, "PASSWORD:",password)
+                print("UCID:",username, "PASSWORD:",password)
                 return render_template("home.html", name=("Hi " + CurrentUser[0][2] + "!"))
             else:
-                return render_template("index.html", LOGIN_ERROR_MSG="Invalid username or password")
+                return render_template("index.html", LOGIN_ERROR_MSG="Invalid UCID or password")
         else:
             return render_template("index.html")
     except Exception as e:
@@ -172,10 +172,12 @@ def book_spot():
         table_ID = request.form['table_ID']
         ucid = request.form['ucid']
         schedule_ID = request.form['schedule_ID']
-        success = add_time_slot(time_slot, ucid, table_ID, schedule_ID)
+        success, msg = add_time_slot(time_slot, ucid, table_ID, schedule_ID)
         if success:
             print("Time Slot: ", time_slot, "UCID: ", ucid, "Table ID: ", table_ID)
-        return render_template("booking.html", msg = "Booked!")
+            return render_template("booking.html", msg = msg)
+        else:
+            return render_template("booking.html", msg = msg)
     else:
         return render_template("home.html")
 
@@ -186,12 +188,15 @@ def delete_spot():
         table_ID = request.form['table_ID']
         ucid = request.form['ucid']
         schedule_ID = request.form['schedule_ID']
-        success = remove_time_slot(time_slot, ucid, table_ID, schedule_ID)
+        success, msg = remove_time_slot(time_slot, ucid, table_ID, schedule_ID)
         if success:
             print("Time Slot: ", time_slot, "UCID: ", ucid, "Table ID: ", table_ID, "Schedule ID: " , schedule_ID)
-        return render_template("booking.html", msg1 = "Booking Deleted")
+            return render_template("booking.html", msg1 = msg)
+        else:
+            return render_template("booking.html", msg1 = msg)
     else:
         return render_template("home.html")
+        
 @app.route('/leaderBoards', methods=['GET', 'POST'], endpoint='leaderBoards')
 def leaderBoards():
     if request.method == 'POST':

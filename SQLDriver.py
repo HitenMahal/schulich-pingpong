@@ -372,23 +372,34 @@ def delete_building(name):
     cursor.close()   
 
 def add_time_slot(time_slot, ucid, table_ID, schedule_ID): 
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"INSERT INTO SCHEDULE_TIME_SLOTS VALUES ({int(time_slot)}, {int(ucid)}, {int(table_ID)}, {int(schedule_ID)})")
-    db.commit()
-    if cursor.rowcount == 1:
-        cursor.close()
-        return True
-    else:
-        cursor.close()
-        return False
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"INSERT INTO SCHEDULE_TIME_SLOTS VALUES ({int(time_slot)}, {int(ucid)}, {int(table_ID)}, {int(schedule_ID)})")
+        db.commit()
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, "Succesfully Booked"
+        else:
+            cursor.close()
+            return False, "Time slot is unavailable"
+    except Exception as e:
+        return False, str(e)
 
 def remove_time_slot(time_slot, ucid, table_ID, schedule_ID):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE timeSlot = {int(time_slot)} AND UCID = {int(ucid)} AND tableID = {int(table_ID)} AND scheduleNumber = {int(schedule_ID)}")
-    db.commit()
-    cursor.close()
+    try:
+        db = connect_db()
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM SCHEDULE_TIME_SLOTS WHERE timeSlot = {int(time_slot)} AND UCID = {int(ucid)} AND tableID = {int(table_ID)} AND scheduleNumber = {int(schedule_ID)}")
+        db.commit()
+        if cursor.rowcount == 1:
+            cursor.close()
+            return True, "Successfully Cancelled Booking"
+        else:
+            cursor.close()
+            return False, "Unable to cancel that bookings"
+    except Exception as e:
+        return False, str(e)
 
 def add_table(building_name, table_num):
     db = connect_db()
