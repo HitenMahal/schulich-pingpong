@@ -10,6 +10,7 @@ def connect_db():
 def init_db():
     db = connect_db()
     cursor = db.cursor()
+    # cursor.execute("PRAGMA foreign_keys = 1")
     # EndUser
     cursor.execute("DROP TABLE IF EXISTS EndUser")
     cursor.execute("""
@@ -24,10 +25,9 @@ def init_db():
     cursor.execute("DROP TABLE IF EXISTS Users")
     cursor.execute("""
     CREATE TABLE Users (
+        UCID INTEGER PRIMARY KEY, 
         weeklyHourLimit TEXT, 
-        UCID INTEGER, 
-        PRIMARY KEY(UCID), 
-        FOREIGN KEY (UCID) REFERENCES EndUser(Ucid)
+        FOREIGN KEY (UCID) REFERENCES EndUser(UCID) ON DELETE CASCADE
     )""")
     # Building
     cursor.execute("DROP TABLE IF EXISTS Building")
@@ -52,10 +52,10 @@ def init_db():
     cursor.execute("""
     CREATE TABLE Stats (
         UCID INTEGER, 
-        statDistinguisher INTEGER, 
-        mathcesWon	INTEGER, 
+        statDistinguisher TEXT, 
+        matchesWon INTEGER, 
         hoursPlayed INTEGER, 
-        matchesPlayed	INTEGER, 
+        matchesPlayed INTEGER, 
         PRIMARY KEY(UCID, statDistinguisher), 
         FOREIGN KEY (UCID) REFERENCES Users (UCID)
     );""")
@@ -76,7 +76,7 @@ def init_db():
         EName TEXT,
         BName TEXT,
         PRIMARY KEY(LName, EName, BName),
-        FOREIGN KEY(EName) REFERENCES eventsHappining(EName),
+        FOREIGN KEY(EName) REFERENCES Events(EName),
         FOREIGN KEY(BName) REFERENCES Building(buildingName)
     );""")
     # Team
@@ -87,6 +87,7 @@ def init_db():
         LName TEXT,
         teamType TEXT,
         teamName TEXT,
+        UNIQUE(teamName, LName),
         FOREIGN KEY (LName) REFERENCES LeaderBoard(LName)
     );""")
     # Game
@@ -94,10 +95,10 @@ def init_db():
     cursor.execute("""
     CREATE TABLE Game (
         LName TEXT,
-        matchID INTEGER,
-        score Text,
+        matchID INTEGER PRIMARY KEY,
+        score1 INTEGER,
+        score2 INTEGER,
         matchDate TEXT,
-        PRIMARY KEY(LName, matchID),
         FOREIGN KEY(Lname) REFERENCES LeaderBoard(LName)
     );""")
     # Game_Player_Id
@@ -106,9 +107,10 @@ def init_db():
     CREATE TABLE Game_Player_Id (
         matchID INTEGER,
         PUCID INTEGER,
+        side INTEGER,
         PRIMARY KEY(matchID, PUCID),
-        FOREIGN KEY(matchID) REFERENCES gamePlayed(matchID),
-        FOREIGN KEY(PUCID) REFERENCES Users(UCID)
+        FOREIGN KEY(matchID) REFERENCES Game(matchID),
+        FOREIGN KEY(PUCID) REFERENCES EndUser(UCID)
     );""")
     # Team_Player_Id
     cursor.execute("DROP TABLE IF EXISTS Team_Player_Id")
@@ -117,7 +119,7 @@ def init_db():
         teamID INTEGER PRIMARY KEY, 
         PUCID INTEGER,
         FOREIGN KEY(teamID) REFERENCES Team(teamID),
-        FOREIGN KEY(PUCID) REFERENCES Users(UCID)
+        FOREIGN KEY(PUCID) REFERENCES EndUser(UCID)
     );""")
     # Building_Tables
     cursor.execute("DROP TABLE IF EXISTS Building_Tables")
@@ -196,9 +198,9 @@ def initDefaultUsersAndAdmins():
     cursor.execute("INSERT INTO Stats VALUES (1, 1, 10, 20, 30)")
     cursor.execute("INSERT INTO Team VALUES (1, 'Engineering Drop-In', 'SINGLES', 'Pong Pros')")
     cursor.execute("INSERT INTO Team_Player_Id VALUES (1, 1)")
-    cursor.execute("INSERT INTO Game VALUES ('Engineering Drop-In', 1234, 'Crazy people: 14      Sane people: 21', '2013,02,10')")
-    cursor.execute("INSERT INTO Game VALUES ('Engineering Drop-In', 4321, 'Crazy people: 21      Sane people: 14', '2013,02,10')")
-    cursor.execute("INSERT INTO Leaderboard VALUES ('crazy Time board', 'crazy Event', 'The Crazy Building')")
+    cursor.execute("INSERT INTO Game (LName, score1, score2, matchDate) VALUES ('Engineering Drop-In', 21, 14, '2013-02-10')")
+    cursor.execute("INSERT INTO Game (LName, score1, score2, matchDate) VALUES ('Engineering Drop-In', 19, 21, '2013-02-10')")
+    cursor.execute("INSERT INTO Leaderboard VALUES ('Engineering Drop-In', 'Drop-in', 'The Crazy Building')")
     cursor.execute("INSERT INTO Building VALUES ('The Crazy Building', 'In a crazy Location', 'Crazy Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Amazing Building', 'In a Amazing Location', 'Amazing Studies')")
     cursor.execute("INSERT INTO Building VALUES ('The Engineering Building', 'In the best Location', 'Torture Studies')")

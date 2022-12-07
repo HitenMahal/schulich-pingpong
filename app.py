@@ -25,14 +25,14 @@ def login():
     try:
         if request.method == 'POST':
             global CurrentUser
-            username = request.form['username']
+            username = request.form['UCID']
             password = request.form['password']
             result, CurrentUser = loginUser(int(username), password)
             if result:
-                print("USERNAME:",username, "PASSWORD:",password)
+                print("UCID:",username, "PASSWORD:",password)
                 return render_template("home.html", name=("Hi " + CurrentUser[0][2] + "!"))
             else:
-                return render_template("index.html", LOGIN_ERROR_MSG="Invalid username or password")
+                return render_template("index.html", LOGIN_ERROR_MSG="Invalid UCID or password")
         else:
             return render_template("index.html")
     except Exception as e:

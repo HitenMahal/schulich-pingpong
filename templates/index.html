@@ -2,23 +2,85 @@
 <html>
     <head>
         <title>Schulich Ping-Pong</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
     </head>
     <body>
-        <h1> Schulich Ping-Pong </h1>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Username">
-            <input type="password" name="password" placeholder="Password">
-            <input type="submit" value="Sign In">
-        </form>
-        <h1>{{LOGIN_ERROR_MSG}}</h1>
-        <h1>----------------------------------------------------------------------------------</h1>
-        <form action="/register" method="POST">
-            <input type="text" name="ucid" placeholder="UCID">
-            <input type="password" name="password" placeholder="Password">
-            <input type="text" name="name" placeholder="Full Name">
-            <input type="text" name="email" placeholder="Email">
-            <input type="submit" value="Register">
-        </form>
-        <h1>{{REGISTER_MSG}}</h1>
+        <div class="formBox">
+            <div class="title">
+                Schulich Ping-Pong
+            </div>
+            <div class="wrapper">
+               <div class="toggle">
+                  <input type="radio" name="slide" id="login" checked>
+                  <input type="radio" name="slide" id="register">
+                  <label for="login" class="slide login">Login</label>
+                  <label for="register" class="slide register">Register</label>
+                  <div class="slider-tab"></div>
+               </div>
+               <div class="form-inner">
+                  <form action="/login" class="login" method="POST">
+                     <div class="field">
+                        <input type="text" name="UCID" placeholder="UCID" required>
+                     </div>
+                     <div class="field">
+                        <input type="password" name="password" placeholder="Password" required>
+                     </div>
+                     <div class="field btn">
+                        <div class="btn-layer"></div>
+                        <input type="submit" value="Login">
+                     </div>
+                     <div class="msg" id="msg1">
+                        {{LOGIN_ERROR_MSG}}
+                    </div>
+                  </form>
+                  <form action="/register" class="register" method="POST">
+                     <div class="field">
+                        <input type="text" name="ucid" placeholder="UCID" required>
+                     </div>
+                     <div class="field">
+                        <input type="password" name="password" placeholder="Password" required>
+                     </div>
+                     <div class="field">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                     </div>
+                     <div class="field">
+                        <input type="text" name="email" placeholder="Email" required>
+                     </div>
+                     <div class="field btn">
+                        <div class="btn-layer"></div>
+                        <input type="submit" value="Register">
+                     </div>
+                     <div class="msg" id="msg2">
+                        {{REGISTER_MSG}}
+                    </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+         <script>
+            const loginText = document.querySelector(".title-text .login");
+            const loginForm = document.querySelector("form.login");
+            const loginBtn = document.querySelector("label.login");
+            const registerBtn = document.querySelector("label.register");
+            const registerLink = document.querySelector("form .register-link a");
+            const loginMsg = document.getElementById("msg1").textContent.trim();
+            const regMsg = document.getElementById("msg2").textContent.trim();
+            const loginBtnElement = document.getElementById("login");
+            const registerBtnElement = document.getElementById("register");
+
+            console.log("|" + loginMsg + "|");
+            console.log("|" + regMsg + "|");
+            if (regMsg){
+                loginForm.style.marginLeft = "-50%";
+                loginBtnElement.checked = false;
+                registerBtnElement.checked = true;
+            }
+            registerBtn.onclick = (()=>{
+              loginForm.style.marginLeft = "-50%";
+            });
+            loginBtn.onclick = (()=>{
+              loginForm.style.marginLeft = "0%";
+            });
+         </script>
     </body>
 </html> 
