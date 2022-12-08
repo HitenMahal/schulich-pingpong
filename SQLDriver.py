@@ -195,7 +195,7 @@ def getUserTeamsID(ucid):
 def getUserTeamsLeaderBoard(userTeamID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"SELECT LName FROM Team WHERE teamID = {userTeamID}")
+    cursor.execute(f"SELECT * FROM Team WHERE teamID = {userTeamID}")
     teams = cursor.fetchall()
     if len(teams) == 1:
         cursor.close()
@@ -256,10 +256,10 @@ def edit_rental(rental_id):
     db.commit()
     cursor.close()
 
-def new_match(match_id, ucid, score, date):
+def new_Game(leaderboardName, scoreONE, scoreTWO, matchDATE):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO MATCH VALUES ({match_id}, {ucid}, {score}, {date})")
+    cursor.execute(f"INSERT INTO Game (LName, score1, score2, matchDate) VALUES ('{leaderboardName}', {scoreONE}, {scoreTWO}, '{matchDATE}')")
     db.commit()
     cursor.close()
 
@@ -271,7 +271,15 @@ def getMatches(leaderboardName):
     cursor.close()
     return matches
 
-def cancel_match(match_id):
+def getGameID(leaderboardName):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM Game WHERE LNAME = '{leaderboardName}'")
+    matches = cursor.fetchall()
+    cursor.close()
+    return matches
+
+def cancel_Game(match_id):
     db = connect_db()
     cursor = db.cursor()
     cursor.execute(f"DELETE FROM MATCH WHERE match_id = {match_id}")
@@ -281,18 +289,31 @@ def cancel_match(match_id):
 def new_leaderboard(name, event_name, building_name):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"INSERT INTO LEADERBOARD (Name, E_name, B_name) VALUES (Name = {name}, E_name = {event_name}, B_name = {building_name})")
+    cursor.execute(f"INSERT INTO Leaderboard (Name, E_name, B_name) VALUES (Name = {name}, E_name = {event_name}, B_name = {building_name})")
     db.commit()
     cursor.close()
 
 def getLeaderboards(LeaderboardName):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"SELECT * FROM LEADERBOARD WHERE LName = '{LeaderboardName}'")
+    cursor.execute(f"SELECT * FROM Leaderboard WHERE LName = '{LeaderboardName}'")
     db.commit()
     leaderboards = cursor.fetchall()
     cursor.close()
     return leaderboards
+
+def getAllLeaderboards():
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM Leaderboard")
+    db.commit()
+    leaderboards = cursor.fetchall()
+    if len(leaderboards) > 0 :
+        cursor.close()
+        return True, leaderboards
+    else:
+        cursor.close()
+        return False, None
 
 def delete_leaderboard(name):
     db = connect_db()
