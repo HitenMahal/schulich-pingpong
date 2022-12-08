@@ -15,11 +15,20 @@
             <input class="formInput" type = "text" name = "BName" placeholder = "Enter Building Name" required>
             <input class="buttonsmall" type="submit" value="Create Leaderboard">
         </form>
+        <div class="msg" id="msg1">
+            {{ADD_LEADERBOARD_MESSAGE}}
+        </div>
+        <h1>Add Games to A Leaderboard</h1>
         <form action="/addGamesToLeaderboard" method="POST">
             <input class="formInput" type = "text" name = "LName" placeholder = "Enter Leaderboard Name" required>
-            <input class="formInput" type = "text" name = "BName" placeholder = "Enter Building Name" required>
+            <input class="formInput" type = "text" name = "scoreONE" placeholder = "Enter the score of Winning team" required>
+            <input class="formInput" type = "text" name = "scoreTWO" placeholder = "Enter the score of Losing team" required>
+            <input class="formInput" type = "text" name = "matchDATE" placeholder = "Enter Date played (e.g 2013-02-10)" required>
             <input class="buttonsmall" type="submit" value="Create Leaderboard">
         </form>
+        <div class="msg" id="msg1">
+            {{ADD_GAME_MESSAGE}}
+        </div>
     </div>
 </body>
 </html>

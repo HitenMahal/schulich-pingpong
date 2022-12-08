@@ -95,11 +95,10 @@ def init_db():
     cursor.execute("""
     CREATE TABLE Game (
         LName TEXT,
-        matchID INTEGER AUTO_INCREMENT,
+        matchID INTEGER PRIMARY KEY,
         score1 INTEGER,
         score2 INTEGER,
         matchDate TEXT,
-        PRIMARY KEY(matchID),
         FOREIGN KEY(Lname) REFERENCES LeaderBoard(LName)
     );""")
     # Game_Player_Id

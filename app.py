@@ -243,21 +243,47 @@ def leaderBoards():
     else:
         return render_template("teams.html")
 
+@app.route('/adminDashboard', methods=['GET', 'POST'], endpoint='adminDashboard')
+def adminDashboard():
+    if request.method == 'POST':
+        return render_template("adminDashboard.html")
+    else:
+        return render_template("home.html")
+
 @app.route('/addLeaderboard', methods=['GET', 'POST'], endpoint='addLeaderboard')
 def addLeaderboard():
     if request.method == 'POST':
-        existingLeaderboards = getAllLeaderboards()
+        existingLeaderboardsResult, existingLeaderboards = getAllLeaderboards()
         newLeaderboard = request.form['LName']
-        for x in existingLeaderboards:
-            if newLeaderboard == x[0]:
-                return render_template("adminDashboard.html", errorMessage = "Leader board name already exists")
-        return render_template("adminDashboard.html")
+        leaderboardEventName = request.form['EName']
+        buildingName = request.form['BName']
+        if existingLeaderboardsResult:
+            for x in existingLeaderboards:
+                if newLeaderboard == x[0]:
+                    return render_template("adminDashboard.html", ADD_LEADERBOARD_MESSAGE = "Leaderboard name already exists")
+        else:
+            new_leaderboard(newLeaderboard, leaderboardEventName, buildingName)
+            return render_template("adminDashboard.html", ADD_LEADERBOARD_MESSAGE = "New leaderboard created")
     else:
         return render_template("adminDashboard.html")
 
 @app.route('/addGamesToLeaderboard', methods=['GET', 'POST'], endpoint='addGamesToLeaderboard')
 def addGamesToLeaderboard():
     if request.method == 'POST':
+        existingLeaderboardsResult, existingLeaderboards = getAllLeaderboards()
+        leaderboardEntered = request.form['LName']
+        scoreONE = request.form['scoreONE']
+        scoreTWO = request.form['scoreTWO']
+        matchDate = request.form['matchDATE']
+        if existingLeaderboardsResult:
+            for x in existingLeaderboards:
+                if leaderboardEntered == x[0]:
+                    new_Game(leaderboardEntered, scoreONE, scoreTWO, matchDate)
+                    return render_template("adminDashboard.html", ADD_GAME_MESSAGE = "Game added to leaderboard")
+                else:
+                    return render_template("adminDashboard.html", ADD_GAME_MESSAGE = "Leaderboard doesn't exist")
+        else:
+            return render_template("adminDashboard.html", ADD_GAME_MESSAGE = "Leaderboard doesn't exist")
         return render_template("adminDashboard.html")
     else:
         return render_template("adminDashboard.html")
