@@ -6,36 +6,53 @@
     </head>
     <body>
         <div class="container">
-            <h1> Schulich Ping-Pong </h1>
-            <h1> Team Submission</h1>
-            <form action="/SUBMIT_TEAMS" method="POST">
-                <input class="formInput" type = "text" name = "team_name" placeholder = "Team Name" required>
-                <input class="formInput" type = "text" name = "team_type" placeholder = "Team Type" required>
-                <input class="buttonsmall" type = "submit" value="Submit">
-            </form>
-            <div class="msg">
-                {{NEW_TEAM_MSG}}
+            <div class="c1">
+                <h1> Schulich Ping-Pong </h1>
+                <h1> Team Submission</h1>
+                <form action="/SUBMIT_TEAMS" method="POST">
+                    <input class="formInput" type = "text" name = "team_name" placeholder = "Team Name" required>
+                    <input class="formInput" type = "text" name = "team_type" placeholder = "Team Type" required>
+                    <input class="buttonsmall" type = "submit" value="Submit">
+                </form>
+                <div class="msg">
+                    {{NEW_TEAM_MSG}}
+                </div>
+                <h1> Team Deletion</h1>
+                <form action="/Delete_Teams" method="POST">
+                    <input class="formInput" type="text" name="team_id" placeholder = "ID" required>
+                    <input class="buttonsmall" type="submit" value="Delete">
+                </form>
+                <div class="msg">
+                    {{DEL_TEAM_MSG}}
+                </div>
+                <br>
+                <h1>Edit Team</h1>
+                <form action="/editTeams" method="POST">
+                    <input class="buttonsmall" type="submit" value="Edit Teams">
+                </form>
+                <br>
+                <h1>Check leaderboards you are in</h1>
+                <form action="/leaderBoards" method="POST">
+                    <input class="buttonsmall" type="submit" value="Leaderboards">
+                </form>
+                <div class="msg">
+                    {{msg}}
+                </div>
             </div>
-            <h1> Team Deletion</h1>
-            <form action="/Delete_Teams" method="POST">
-                <input class="formInput" type="text" name="team_id" placeholder = "ID" required>
-                <input class="buttonsmall" type="submit" value="Delete">
-            </form>
-            <div class="msg">
-                {{DEL_TEAM_MSG}}
-            </div>
-            <br>
-            <h1>Edit Team</h1>
-            <form action="/editTeams" method="POST">
-                <input class="buttonsmall" type="submit" value="Edit Teams">
-            </form>
-            <br>
-            <h1>Check leaderboards you are in</h1>
-            <form action="/leaderBoards" method="POST">
-                <input class="buttonsmall" type="submit" value="Leaderboards">
-            </form>
-            <div class="msg">
-                {{msg}}
+            <div class="c2">
+                {% if teams == None %}
+                    <h1> You are not currently part of any Teams </h1>
+                {% endif %}
+                {% if teams != None %}
+                    <h1> Your Teams </h1>
+                {% endif %}
+                {% for team in teams %}
+                    <div class="team">
+                        <h1>Team Name: {{team.team_name}}</h1>
+                        <h1>Team Type: {{team.team_type}}</h1>
+                        <h1>Team ID: {{team.team_id}}</h1>
+                    </div>
+                {% endfor %
             </div>
         </div>
     </body>

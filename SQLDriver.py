@@ -89,7 +89,6 @@ def edit_stats(ucid):
     db.commit()
     cursor.close()
 
-
 def new_team(team_name, team_type, ucid):
     try:
         db = connect_db()
@@ -171,14 +170,10 @@ def remove_team_member(ucid):
 def get_all_teams_with_user(ucid):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"SELECT team_id FROM TEAM WHERE UCID = {ucid}")
+    cursor.execute(f"SELECT teamId FROM Team_Player_Id WHERE PUCID = {ucid}")
     teams = cursor.fetchall()
-    if len(teams) == 1:
-        cursor.close()
-        return True, teams
-    else:
-        cursor.close()
-        return False, None
+    cursor.close()
+    return teams
 
 def getUserTeamsID(ucid):
     db = connect_db()

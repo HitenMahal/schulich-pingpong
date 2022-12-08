@@ -46,11 +46,13 @@
                     </div>
                 </li>
             </ul>
+            {% if type == "ADMIN" %}
             <div class="buttonOptions">
                 <form action="/adminDashboard" method="POST">
                     <input class="button" type="submit" value="Admin Powers">
                 </form>
             </div>
+            {% endif %}
         </div>
     </body>
 </html> 

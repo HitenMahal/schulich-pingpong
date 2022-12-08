@@ -30,7 +30,7 @@ def login():
             print(CurrentUser)
             if result:
                 print("UCID:",username, "PASSWORD:",password)
-                return render_template("home.html", name=("Hi " + CurrentUser[0][2] + "!"))
+                return render_template("home.html", name=("Hi " + CurrentUser[0][2] + "!"), type=CurrentUser[0][4])
             else:
                 return render_template("index.html", LOGIN_ERROR_MSG="Invalid UCID or password")
         else:
@@ -58,6 +58,8 @@ def register():
 def stats():
     if request.method == 'POST':
         stats = get_user_stats(CurrentUser[0][0])
+        if len(stats) == 0:
+            return render_template("stats.html", matchesWon="This user does not have any stats recorded in the database yet")
         matchesWon = "matches Won: " + str(stats[0][2])
         hoursPlayed = "hours Played: " + str(stats[0][3])
         matchesPlayed = "matches Played: " + str(stats[0][4])
