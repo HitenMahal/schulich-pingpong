@@ -57,7 +57,7 @@ def register():
 @app.route('/stats', methods=['GET', 'POST'], endpoint='stats')
 def stats():
     if request.method == 'POST':
-        stats = get_user_stats(1)
+        stats = get_user_stats(CurrentUser[0][0])
         matchesWon = "matches Won: " + str(stats[0][2])
         hoursPlayed = "hours Played: " + str(stats[0][3])
         matchesPlayed = "matches Played: " + str(stats[0][4])
