@@ -5,13 +5,16 @@
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
     </head>
     <body>
-        <div class="container">
+        <div class="containerDualColumn">
             <div class="c1">
                 <h1> Schulich Ping-Pong </h1>
                 <h1> Team Submission</h1>
                 <form action="/SUBMIT_TEAMS" method="POST">
                     <input class="formInput" type = "text" name = "team_name" placeholder = "Team Name" required>
-                    <input class="formInput" type = "text" name = "team_type" placeholder = "Team Type" required>
+                    <select class="formInput" name="team_type">
+                        <option value="SINGLES">Singles</option>
+                        <option value="DOUBLES">Doubles</option>
+                    </select>
                     <input class="buttonsmall" type = "submit" value="Submit">
                 </form>
                 <div class="msg">
@@ -40,19 +43,19 @@
                 </div>
             </div>
             <div class="c2">
-                {% if teams == None %}
+                {% if teams == none %}
                     <h1> You are not currently part of any Teams </h1>
                 {% endif %}
-                {% if teams != None %}
+                {% if teams != none %}
                     <h1> Your Teams </h1>
-                {% endif %}
                 {% for team in teams %}
                     <div class="team">
-                        <h1>Team Name: {{team.team_name}}</h1>
-                        <h1>Team Type: {{team.team_type}}</h1>
-                        <h1>Team ID: {{team.team_id}}</h1>
+                        <h1>Team Name: {{team[3]}}</h1>
+                        <h1>Team Type: {{team[2]}}</h1>
+                        <h1>Team ID: {{team[0]}}</h1>
                     </div>
                 {% endfor %}
+                {% endif %}
             </div>
         </div>
     </body>

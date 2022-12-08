@@ -81,9 +81,9 @@ def SUBMIT_TEAMS():
         success, team_id = new_team(team_name, team_type, CurrentUser[0][0])
         if success:
             print("TEAM ID: ", team_id, "TEAM NAME: ", team_name, "TEAM TYPE: ", team_type)
-            return render_template("teams.html", NEW_TEAM_MSG="Team created successfully")
+            return render_template("teams.html", NEW_TEAM_MSG="Team created successfully", teams=get_all_teams_with_user(CurrentUser[0][0]))
         else:
-            return render_template("teams.html", NEW_TEAM_MSG=team_id)
+            return render_template("teams.html", NEW_TEAM_MSG=team_id, teams=get_all_teams_with_user(CurrentUser[0][0]) )
     else:
         return render_template("home.html")
 
@@ -135,7 +135,7 @@ def editTeams():
 @app.route('/teams', methods=['GET', 'POST'], endpoint='teams')
 def teams():
     if request.method == 'POST':
-            return render_template("teams.html")
+            return render_template("teams.html", teams=get_all_teams_with_user(CurrentUser[0][0]))
     else:
         return render_template("home.html")
 
@@ -245,8 +245,6 @@ def leaderBoards():
                         displayScoreAndTime += "!"
             return render_template("leaderboards.html", displayLeaderboardName = displayLeaderboardName, displayScoreAndTime = displayScoreAndTime, 
             totalMatches = totalMatches)
-    else:
-        return render_template("teams.html")
 
 @app.route('/adminDashboard', methods=['GET', 'POST'], endpoint='adminDashboard')
 def adminDashboard():

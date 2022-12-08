@@ -93,13 +93,16 @@ def new_team(team_name, team_type, ucid):
     try:
         db = connect_db()
         cursor = db.cursor()
-        cursor.execute(f"INSERT INTO Team (LName, teamType, teamName) VALUES ('drop-in', '{team_type}', '{team_name}')")
-        msg = cursor.lastrowid
-        cursor.execute(f"INSERT INTO Team_Player_Id VALUES ({msg}, {ucid})")
+        cursor.execute(f"SELECT teamID FROM Team_Player_Id WHERE PUCID={ucid}")
+        if len(cursor.fetchall()) > 0:
+            return False, "You are already in a team, Currently only 1 team per user is allowed, Support for more teams will be coming soon!"
+        cursor.execute(f"INSERT INTO Team (LName, teamType, teamName) VALUES ('Drop-in', '{team_type}', '{team_name}')")
+        teamID = cursor.lastrowid
+        cursor.execute(f"INSERT INTO Team_Player_Id VALUES ({teamID}, {ucid})")
         db.commit()
         if cursor.rowcount == 1:
             cursor.close()
-            return True, msg
+            return True, teamID
         else:
             cursor.close()
             return False, "Failed to add to DB"
@@ -172,8 +175,17 @@ def get_all_teams_with_user(ucid):
     cursor = db.cursor()
     cursor.execute(f"SELECT teamId FROM Team_Player_Id WHERE PUCID = {ucid}")
     teams = cursor.fetchall()
+    teams = [int(x[0]) for x in teams]
+    if teams==[]:
+        cursor.close()
+        return None
+    output = []
+    for team in teams:
+        cursor = db.cursor()
+        cursor.execute(f"SELECT * FROM Team WHERE teamID = {team}")
+        output.append(cursor.fetchone())
     cursor.close()
-    return teams
+    return output
 
 def getUserTeamsID(ucid):
     db = connect_db()

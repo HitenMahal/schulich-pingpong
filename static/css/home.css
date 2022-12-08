@@ -106,3 +106,19 @@ form {
 .c2 {
     width: 50%;
 }
+
+.team {
+    font-size: 10px;
+    margin: 10px;
+}
+
+.containerDualColumn {
+    overflow: hidden;
+    width: 90vw;
+    height: 90vh;
+    background: #fff;
+    padding: 30px;
+    border-radius: 50px;
+    box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+    display: flex;
+}
