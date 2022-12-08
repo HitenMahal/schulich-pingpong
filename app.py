@@ -14,9 +14,9 @@ CurrentTeam = None
 
 @app.route('/')
 def index():
-    init_db()
-    initDefaultUsersAndAdmins()
-    dbTest()
+    # init_db()
+    # initDefaultUsersAndAdmins()
+    # dbTest()
     return render_template("index.html")
 
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
