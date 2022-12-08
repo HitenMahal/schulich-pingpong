@@ -41,23 +41,10 @@ def add_new_profile(UCID, Password, Name, Email):
     except Exception as e:
         return str(e)
 
-def delete_profile(UCID):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"DELETE FROM ENDUSER WHERE UCID = {UCID}")
-    cursor.close()
-
-def edit_profile(ucid):
-    db = connect_db()
-    cursor = db.cursor()
-    cursor.execute(f"UPDATE ENDUSER SET UCID=UCID_value, name=name_value, google_email=google_email_value, user_type=user_type_value WHERE UCID= {ucid}")
-    db.commit()
-    cursor.close()
-
 def get_user_profile(UCID):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"SELECT * FROM ENDUSER WHERE UCID = {UCID}")
+    cursor.execute(f"SELECT * FROM EndUser WHERE UCID = {UCID}")
     cursor.close()
 
 def get_user_stats(UCID):

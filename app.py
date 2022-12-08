@@ -90,9 +90,9 @@ def Delete_Teams():
         team_id = request.form['team_id']
         success, team_id = delete_team(team_id)
         if success:
-            return render_template("teams.html", DEL_TEAM_MSG = "Deleted team successfully")
+            return render_template("teams.html", DEL_TEAM_MSG = "Deleted team successfully", teams=get_all_teams_with_user(CurrentUser[0][0]) )
         else:
-            return render_template("teams.html", DEL_TEAM_MSG = "Team doesn't Exist")
+            return render_template("teams.html", DEL_TEAM_MSG = "Team doesn't Exist", teams=get_all_teams_with_user(CurrentUser[0][0]) )
     else:
         return render_template("home.html")
 
