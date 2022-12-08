@@ -284,9 +284,35 @@ def addGamesToLeaderboard():
                     return render_template("adminDashboard.html", ADD_GAME_MESSAGE = "Leaderboard doesn't exist")
         else:
             return render_template("adminDashboard.html", ADD_GAME_MESSAGE = "Leaderboard doesn't exist")
-        return render_template("adminDashboard.html")
     else:
         return render_template("adminDashboard.html")
+
+@app.route('/deleteLeaderboard', methods=['GET', 'POST'], endpoint='deleteLeaderboard')
+def deleteLeaderboard():
+    if request.method == 'POST':
+        leaderboardToDelete = request.form['LName']
+        existingLeaderboardsResult, existingLeaderboards = getAllLeaderboards()
+        if existingLeaderboardsResult:
+            for i in existingLeaderboards:
+                if leaderboardToDelete == i[0]:
+                    delete_leaderboard(leaderboardToDelete)
+                    gamesToDelete = getMatches(leaderboardToDelete)
+                    if gamesToDelete != None:
+                        for j in gamesToDelete:
+                            cancel_Game(j[1])
+                        foundTeams, teamsToBeChanged = getTeamFromLeaderboard(leaderboardToDelete)
+                        if foundTeams:
+                            for k in teamsToBeChanged:
+                                editTeamLName(leaderboardToDelete)
+                        return render_template("adminDashboard.html", DELETE_GAME_MESSAGE = "Leaderboard has been deleted")
+                    else:
+                        return render_template("adminDashboard.html", DELETE_GAME_MESSAGE = "Leaderboard has been deleted but no games found in leaderboard")
+                else:
+                    return render_template("adminDashboard.html", DELETE_GAME_MESSAGE = "Leaderboard doesn't exist")
+        else:
+            return render_template("adminDashboard.html", DELETE_GAME_MESSAGE = "Leaderboard doesn't exist")
+    else:
+        return render_template("home.html")
 
 @app.teardown_appcontext
 def close_connection(exception):

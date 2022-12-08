@@ -192,6 +192,18 @@ def getUserTeamsID(ucid):
         cursor.close()
         return False, None
 
+def getTeamFromLeaderboard(leaderboardName):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"SELECT * FROM Team WHERE LName = '{leaderboardName}'")
+    teams = cursor.fetchall()
+    if len(teams) > 0:
+        cursor.close()
+        return True, teams
+    else:
+        cursor.close()
+        return False, None
+
 def getUserTeamsLeaderBoard(userTeamID):
     db = connect_db()
     cursor = db.cursor()
@@ -203,6 +215,14 @@ def getUserTeamsLeaderBoard(userTeamID):
     else:
         cursor.close()
         return False, None
+
+def editTeamLName(leaderboardName):
+    db = connect_db()
+    cursor = db.cursor()
+    cursor.execute(f"UPDATE Team SET LName = 'drop-in' WHERE LName = '{leaderboardName}'")
+    db.commit()
+    cursor.close()
+
 
 def new_schedule(schedule_num, ucid):
     db = connect_db()
@@ -268,8 +288,12 @@ def getMatches(leaderboardName):
     cursor = db.cursor()
     cursor.execute(f"SELECT * FROM Game WHERE LNAME = '{leaderboardName}'")
     matches = cursor.fetchall()
-    cursor.close()
-    return matches
+    if len(matches) > 0:
+        cursor.close()
+        return matches
+    else:
+        cursor.close()
+        return None
 
 def getGameID(leaderboardName):
     db = connect_db()
@@ -282,7 +306,7 @@ def getGameID(leaderboardName):
 def cancel_Game(match_id):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"DELETE FROM MATCH WHERE match_id = {match_id}")
+    cursor.execute(f"DELETE FROM Game WHERE matchID = {match_id}")
     db.commit()
     cursor.close()
 
@@ -318,7 +342,7 @@ def getAllLeaderboards():
 def delete_leaderboard(name):
     db = connect_db()
     cursor = db.cursor()
-    cursor.execute(f"DELETE FROM LEADERBOARD WHERE name = {name}")
+    cursor.execute(f"DELETE FROM Leaderboard WHERE LName = '{name}'")
     db.commit()
     cursor.close()
 
