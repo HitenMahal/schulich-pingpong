@@ -128,7 +128,7 @@ def remove_member():
 @app.route('/editTeams', methods=['GET', 'POST'], endpoint='editTeams')
 def editTeams():
     if request.method == 'POST':
-            return render_template("editTeams.html")
+        return render_template("editTeams.html")
     else:
         return render_template("home.html")
 
