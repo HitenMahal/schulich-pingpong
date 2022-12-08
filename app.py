@@ -74,9 +74,6 @@ def SUBMIT_TEAMS():
         team_name = request.form['team_name']
         team_type = request.form['team_type']
         CurrentTeam = team_name
-        checkIfInTeam = get_all_teams_with_user(CurrentUser[0][0])
-        if len(checkIfInTeam) > 0:
-            return render_template("teams.html", NEW_TEAM_MSG="Already in a team")
         # player_ucid = request.form['player_ucid']
         success, team_id = new_team(team_name, team_type, CurrentUser[0][0])
         if success:
