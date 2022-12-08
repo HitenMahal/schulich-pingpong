@@ -74,9 +74,6 @@ def SUBMIT_TEAMS():
         team_name = request.form['team_name']
         team_type = request.form['team_type']
         CurrentTeam = team_name
-        checkIfInTeam = get_all_teams_with_user(CurrentUser[0][0])
-        if len(checkIfInTeam) > 0:
-            return render_template("teams.html", NEW_TEAM_MSG="Already in a team")
         # player_ucid = request.form['player_ucid']
         success, team_id = new_team(team_name, team_type, CurrentUser[0][0])
         if success:
@@ -93,9 +90,9 @@ def Delete_Teams():
         team_id = request.form['team_id']
         success, team_id = delete_team(team_id)
         if success:
-            return render_template("teams.html", DEL_TEAM_MSG = "Deleted team successfully")
+            return render_template("teams.html", DEL_TEAM_MSG = "Deleted team successfully", teams=get_all_teams_with_user(CurrentUser[0][0]) )
         else:
-            return render_template("teams.html", DEL_TEAM_MSG = "Team doesn't Exist")
+            return render_template("teams.html", DEL_TEAM_MSG = "Team doesn't Exist", teams=get_all_teams_with_user(CurrentUser[0][0]) )
     else:
         return render_template("home.html")
 
