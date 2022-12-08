@@ -242,7 +242,10 @@ def leaderBoards():
                         displayScoreAndTime += "!"
             return render_template("leaderboards.html", displayLeaderboardName = displayLeaderboardName, displayScoreAndTime = displayScoreAndTime, 
             totalMatches = totalMatches)
-
+        else:
+            return render_template("leaderboards.html", NO_TEAM_MESSAGE = "You are not in any leaderboard")
+    else:
+        return render_template("teams.html")
 @app.route('/adminDashboard', methods=['GET', 'POST'], endpoint='adminDashboard')
 def adminDashboard():
     if request.method == 'POST':
